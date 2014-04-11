@@ -1,0 +1,104 @@
+.content-header {
+  margin-top: 0;
+}
+
+.form-group-btn-busqueda {
+  margin-top: 25px;
+  margin-bottom: 15px;
+}
+
+.checkbox-dia {
+  margin-right: 20px;
+  display: inline-block;
+}
+
+.checkbox-dia > label {
+  display: block;
+  font-weight: normal;
+  margin-bottom: 2px;
+}
+
+.checkbox-dia > input {
+  margin-left: 6px;
+  margin-top: 0px;
+}
+
+.form-horizontal .label-dia {
+  padding-top: 16px;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current {
+  background: #428bca;
+}
+
+.xdsoft_datetimepicker .xdsoft_time_box > div > div.xdsoft_disabled {
+  display: none;
+}
+
+.xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div:hover {
+  background: #428bca;
+}
+
+.xdsoft_scrollbar {
+  display: none;
+}
+
+.btn-table-link {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.form-table {
+  height: 20px;
+}
+
+.nav {
+  margin-bottom: 25px;
+}
+
+.table .td-mapa-1 {
+  width: 157px;
+}
+
+.table .td-mapa-2 {
+  font-size: 20px;
+  height: 44px;
+}
+
+.table .td-mapa-3 {
+  color: grey;
+  font-size: 18px;
+  height: 38px;
+  padding-left: 20px;
+  padding-top: 4px;
+  border: 0;
+}
+
+.table .td-mapa-4 {
+  border: 0;
+}
+
+.table .form-mapa {
+  display: inline-block;
+}
+
+.mapa {
+  width: 140px;
+  height: 140px;
+}
+
+.radio-inline,
+.checkbox-inline {
+  margin-right: 15px;
+}
+
+.radio-inline + .radio-inline,
+.checkbox-inline + .checkbox-inline {
+  margin-left: 0;
+}
+
+.gmnoprint,
+.gmnoscreen {
+  display: none;      
+}

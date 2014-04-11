@@ -1,0 +1,18 @@
+.row
+  .col-md-6
+    form action='/gastos' method='post'
+      .form-group
+        label Concepto
+        input.form-control type='text' name='concepto'
+      .form-group
+        label Fecha
+        input.form-control type='text' name='fecha'
+      .form-group
+        label ¿Quiénes pagaron?
+        .row
+          .col-md-8
+            input.form-control type='text' name='nombre[]'
+          .col-md-4
+            input.form-control type='text' name='monto[]'
+      .form-group
+        label ¿Para quiénes?

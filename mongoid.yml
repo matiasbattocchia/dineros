@@ -1,0 +1,13 @@
+development:
+  sessions:
+    default:
+      database: app_development
+      hosts:
+        - localhost
+
+test:
+  sessions:
+    default:
+      database: app_test
+      hosts:
+        - localhost
