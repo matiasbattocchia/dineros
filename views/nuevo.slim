@@ -5,14 +5,20 @@
         label Concepto
         input.form-control type='text' name='concepto'
       .form-group
+        input type='hidden' name='fecha' value=Time.now
         label Fecha
-        input.form-control type='text' name='fecha'
+        #fecha value=Time.now
       .form-group
         label ¿Quiénes pagaron?
-        .row
-          .col-md-8
-            input.form-control type='text' name='nombre[]'
-          .col-md-4
-            input.form-control type='text' name='monto[]'
+        .row#repetir
+          .col-md-7
+            select.form-control name='nombres[]'
+              - Usuario.each do |usuario|
+                option value=usuario.id = usuario.nombre
+          .col-md-5
+            .input-group
+              span.input-group-addon $
+              input.form-control type='text' name='monto[]'
       .form-group
         label ¿Para quiénes?
+        

@@ -1,13 +1,13 @@
 development:
   sessions:
     default:
-      database: app_development
+      database: gastos_desarrollo
       hosts:
         - localhost
 
 test:
   sessions:
     default:
-      database: app_test
+      database: gastos_prueba
       hosts:
         - localhost
