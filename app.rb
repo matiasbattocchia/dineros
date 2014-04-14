@@ -22,6 +22,10 @@ class Gasto
 
   field :concepto, type: String
   field :fecha, type: Time
+
+  def monto
+    aportes.sum(:monto)
+  end
 end
 
 class Aporte
@@ -47,7 +51,7 @@ get '/gastos/nuevo' do
 end
 
 get '/gastos' do
-  # slim :gastos
+  slim :gastos
 end
 
 post '/gastos' do

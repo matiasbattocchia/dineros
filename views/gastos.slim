@@ -1,0 +1,12 @@
+table.table
+  thead
+    tr
+      th Fecha
+      th Monto
+      th Concepto
+  tbody
+    - Gasto.each do |gasto|
+      tr
+        td = gasto.fecha.strftime('%b %-d')
+        td = ('$%.2f' % gasto.monto).gsub('.', ',')
+        td = gasto.concepto
