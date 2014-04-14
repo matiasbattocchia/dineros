@@ -4,8 +4,15 @@ var dp = $('#fecha').datepicker({
   todayHighlight: true
 });
 
-dp.datepicker('setDate', ''); 
+dp.datepicker('setDate', $('input[type=hidden]').val());
 
 dp.on('changeDate', function(e){
   $('input[type=hidden]').val(e.date)
+});
+
+var algo
+
+$( '#pagadores' ).on('change', '.form-group:last select', function() {
+  selector = $('#pagadores .form-group:last');
+  selector.clone().insertAfter(selector);
 });

@@ -3,22 +3,30 @@
     form action='/gastos' method='post'
       .form-group
         label Concepto
-        input.form-control type='text' name='concepto'
+        input.form-control type='text' name='gasto[concepto]'
       .form-group
-        input type='hidden' name='fecha' value=Time.now
+        input type='hidden' name='gasto[fecha]' value=Time.now
         label Fecha
-        #fecha value=Time.now
-      .form-group
+        #fecha
+      .form-group#pagadores
         label ¿Quiénes pagaron?
-        .row#repetir
-          .col-md-7
-            select.form-control name='nombres[]'
-              - Usuario.each do |usuario|
-                option value=usuario.id = usuario.nombre
-          .col-md-5
-            .input-group
-              span.input-group-addon $
-              input.form-control type='text' name='monto[]'
+        .form-group
+          .row
+            .col-md-7
+              select.form-control name='pagadores[][id]'
+                option value=nil
+                - Usuario.each do |usuario|
+                  option value=usuario.id = usuario.nombre
+            .col-md-5
+              .input-group
+                span.input-group-addon $
+                input.form-control type='text' name='pagadores[][monto]' placeholder='00,00'
+            /* .col-md-1 */
+            /*   span.glyphicon.glyphicon-remove */
       .form-group
         label ¿Para quiénes?
-        
+        - Usuario.each do |usuario|
+          .checkbox
+            label
+              input type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
+      button.btn.btn-primary type='submit' Aceptar

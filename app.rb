@@ -21,7 +21,6 @@ class Gasto
   has_many :participaciones
 
   field :concepto, type: String
-  field :monto, type: Float
   field :fecha, type: Time
 end
 
@@ -45,4 +44,25 @@ end
 
 get '/gastos/nuevo' do
   slim :nuevo
+end
+
+get '/gastos' do
+  # slim :gastos
+end
+
+post '/gastos' do
+  gasto = Gasto.create params[:gasto]
+  
+  params[:pagadores].pop
+  params[:pagadores].each do |pagador|
+    aporte = gasto.aportes.new(monto: pagador[:monto])
+    Usuario.find(pagador[:id]).aportes << aporte 
+  end
+
+  params[:gastadores].each do |gastador|
+    participación = gasto.participaciones.new(porcentaje: 100.0 / params[:gastadores].length)
+    Usuario.find(gastador).participaciones << participación
+  end
+
+  redirect to '/gastos'
 end
