@@ -36,7 +36,7 @@ class Gasto
   field :fecha, type: Time
 
   def monto
-    aportes.sum(:monto)
+    aportes.sum(:monto).to_f
   end
 
   def pagadores
@@ -66,6 +66,10 @@ class Participación
   belongs_to :gasto
 
   field :porcentaje, type: Integer
+end
+
+get '/' do
+  redirect to '/gastos'
 end
 
 get '/gastos/nuevo' do
