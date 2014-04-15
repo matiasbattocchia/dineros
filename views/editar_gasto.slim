@@ -1,0 +1,50 @@
+.row
+  .col-md-6
+    form action='/gastos' method='post'
+      .row
+        .col-md-6
+          .form-group
+            label Concepto
+            input.form-control type='text' name='gasto[concepto]' value=@gasto.concepto
+        .col-md-6
+          .form-group
+            label Fecha
+            input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
+      .form-group#pagadores
+        label ¿Quiénes pagaron?
+        - @gasto.aportes.each do |aporte|
+          .row
+            .col-md-7
+              .form-group
+                select.form-control name='pagadores[][id]'
+                  option value=nil
+                  - Usuario.each do |usuario|
+                    option selected=(usuario == aporte.usuario) value=usuario.id = usuario.nombre
+            .col-md-5
+              .form-group
+                .input-group
+                  span.input-group-addon $
+                  input.form-control type='text' name='pagadores[][monto]' value=aporte.monto.to_currency
+        .row
+          .col-md-7
+            .form-group
+              select.form-control name='pagadores[][id]'
+                option value=nil
+                - Usuario.each do |usuario|
+                  option value=usuario.id = usuario.nombre
+          .col-md-5
+            .form-group
+              .input-group
+                span.input-group-addon $
+                input.form-control type='text' name='pagadores[][monto]' placeholder='00,00'
+            /* .col-md-1 */
+            /*   span.glyphicon.glyphicon-remove */
+      .form-group
+        label ¿Para quiénes?
+        br
+        - participantes = @gasto.participaciones.map{ |part| part.usuario.id }
+        - Usuario.each do |usuario|
+          label.checkbox-inline
+            input checked=(participantes.include?(usuario.id)) type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
+      input type='hidden' name='gasto_existente' value=@gasto.id
+      button.btn.btn-primary.pull-right type='submit' Guardar

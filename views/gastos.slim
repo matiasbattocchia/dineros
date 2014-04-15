@@ -1,12 +1,18 @@
-table.table
+a.btn.btn-primary href='/gastos/nuevo' Nuevo
+
+table.table.table-hover
   thead
     tr
       th Fecha
       th Monto
       th Concepto
+      th De
+      th Para
   tbody
-    - Gasto.each do |gasto|
-      tr
-        td = gasto.fecha.strftime('%b %-d')
-        td = ('$%.2f' % gasto.monto).gsub('.', ',')
+    - @gastos.each do |gasto|
+      tr data-href="/gastos/#{gasto.id}"
+        td = gasto.fecha.short
+        td = gasto.monto.to_currency('$')
         td = gasto.concepto
+        td = gasto.pagadores
+        td = gasto.gastadores
