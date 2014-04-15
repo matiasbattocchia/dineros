@@ -25,7 +25,7 @@
                 .input-group
                   span.input-group-addon $
                   input.form-control type='text' name='pagadores[][monto]' value=aporte.monto.to_currency
-        .row
+        .row.pagos
           .col-md-7
             .form-group
               select.form-control name='pagadores[][id]'
@@ -36,7 +36,16 @@
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control type='text' name='pagadores[][monto]' placeholder='00,00'
+                input.form-control type='text' name='pagadores[][monto]'
+        .row
+          .col-md-7
+            .form-group
+              h4.pull-right Total
+          .col-md-5
+            .form-group
+              .input-group
+                span.input-group-addon $
+                input.form-control disabled=true type='text' value=@gasto.monto.to_currency
             /* .col-md-1 */
             /*   span.glyphicon.glyphicon-remove */
       .form-group
