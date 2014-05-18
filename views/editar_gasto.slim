@@ -10,38 +10,26 @@
           .form-group
             label Fecha
             input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
-      .form-group#pagadores
+      
+      .form-group#pagadores data-usuarios=@usuarios.to_json
+        
         label ¿Quiénes pagaron?
-        - @gasto.aportes.each do |aporte|
-          .row
-            .col-md-7
-              .form-group
-                select.form-control name='pagadores[][id]'
-                  option value=nil
-                  - Usuario.each do |usuario|
-                    option selected=(usuario == aporte.usuario) value=usuario.id = usuario.nombre
-            .col-md-5
-              .form-group
-                .input-group
-                  span.input-group-addon $
-                  input.form-control type='text' name='pagadores[][monto]' value=aporte.monto.to_currency
-        .row.pagos
-          .col-md-7
+        .row
+          .col-md-5
             .form-group
               select.form-control name='pagadores[][id]'
-                option value=nil
-                - Usuario.each do |usuario|
-                  option value=usuario.id = usuario.nombre
-          .col-md-5
+          .col-md-4
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control type='text' name='pagadores[][monto]'
+                input.form-control type='text' name='pagadores[][monto]' 
+          .col.md-3
+            a.btn X
         .row
-          .col-md-7
+          .col-md-5
             .form-group
               h4.pull-right Total
-          .col-md-5
+          .col-md-4
             .form-group
               .input-group
                 span.input-group-addon $

@@ -13,12 +13,6 @@ var dp = $('#fecha').datepicker({
 //   $('input[type=hidden]').val(e.date)
 // });
 
-$( '#pagadores' ).on('change', '.pagos:last select', function() {
-  selector = $('#pagadores .pagos:last');
-  clon = selector.clone();
-	clon.find('input').first().val('');
-	clon.insertAfter(selector);
-});
 
 $( '#pagadores' ).on('change', 'input:enabled', function() {
 	$('#pagadores input:disabled').val( function() {
@@ -29,6 +23,25 @@ $( '#pagadores' ).on('change', 'input:enabled', function() {
 		return String(sum.toFixed(2)).replace('.',',');
 	});
 });
+
+usuarios = $( '#pagadores' ).data('usuarios')
+
+$('#pagadores select').prop('selectedIndex', -1)
+
+p class="form-control-static">email@example.com</p
+
+$( document ).ready( function() {
+  $.each( usuarios, function( index, usuario ) {
+    $( '#pagadores select' ).append( new Option( usuario.nombre, usuario.id ) );
+  });
+});
+
+$( '#pagadores' ).on('change', '.row:nth-last-child(2) select', agregarPagadores );
+
+  selector = $('#pagadores .row:nth-last-child(2)');
+  clon = selector.clone();
+  clon.find('input').first().val('');
+  clon.insertAfter(selector);
 
 
 $( 'tr' ).click( function() {
