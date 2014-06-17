@@ -10,14 +10,6 @@ class Time
   end
 end
 
-ActiveSupport::Inflector.inflections do |inflect|
-  inflect.irregular 'usuario', 'usuarios'
-  inflect.irregular 'gasto', 'gastos'
-  inflect.irregular 'aporte', 'aportes'
-  inflect.irregular 'participación', 'participaciones'
-  inflect.irregular 'cuenta', 'cuentas'
-end
-
 class Usuario
   include Mongoid::Document
 
@@ -103,13 +95,13 @@ get '/gastos' do
 end
 
 post '/gastos' do
-  Gasto.find(params[:gasto_existente]).destroy unless params[:gasto_existente].empty?
+  Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   gasto = Gasto.create params[:gasto]
   
-  params[:prestamistas].delete_if { |i| i[:id].empty? }
+  params[:pagadores].delete_if { |i| i[:id].empty? }
 
-  params[:prestamistas].each do |prestamista|
+  params[:pagadores].each do |prestamista|
     aporte = gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
     Usuario.find(pagador[:id]).aportes << aporte
   end

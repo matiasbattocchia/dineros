@@ -5,6 +5,14 @@ Bundler.require
 Mongoid.load!('./mongoid.yml')
 Mongoid.raise_not_found_error = false
 
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.irregular 'usuario', 'usuarios'
+  inflect.irregular 'gasto', 'gastos'
+  inflect.irregular 'aporte', 'aportes'
+  inflect.irregular 'participación', 'participaciones'
+  inflect.irregular 'cuenta', 'cuentas'
+end
+
 use Rack::Session::Cookie,
   :key => 'rack.session',
   :domain => 'foo.com',

@@ -15,21 +15,21 @@
         
         label ¿Quiénes pagaron?
         .row
-          .col-md-5
+          .col-md-6
             .form-group
               select.form-control name='pagadores[][id]'
-          .col-md-4
+          .col-md-5
             .form-group
               .input-group
                 span.input-group-addon $
                 input.form-control type='text' name='pagadores[][monto]' 
-          .col.md-3
+          .col.md-1
             a.btn X
         .row
-          .col-md-5
+          .col-md-6
             .form-group
               h4.pull-right Total
-          .col-md-4
+          .col-md-5
             .form-group
               .input-group
                 span.input-group-addon $
@@ -43,5 +43,5 @@
         - Usuario.each do |usuario|
           label.checkbox-inline
             input checked=(participantes.include?(usuario.id)) type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
-      input type='hidden' name='gasto_existente' value=@gasto.id
+      input type='hidden' name='id' value=@gasto.id
       button.btn.btn-primary.pull-right type='submit' Guardar
