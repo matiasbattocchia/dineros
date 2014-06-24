@@ -14,40 +14,82 @@ var dp = $('#fecha').datepicker({
 // });
 
 
-$( '#pagadores' ).on('change', 'input:enabled', function() {
-	$('#pagadores input:disabled').val( function() {
-		var sum = 0;
-	  $('#pagadores input:enabled').each( function() {
-			sum += Number($(this).val().replace(',','.'));
-		});
-		return String(sum.toFixed(2)).replace('.',',');
-	});
-});
+// $( '#pagadores' ).on('change', 'input:enabled', function() {
+//   $('#pagadores input:disabled').val( function() {
+//     var sum = 0;
+//     $('#pagadores input:enabled').each( function() {
+//       sum += Number($(this).val().replace(',','.'));
+//     });
+//     return String(sum.toFixed(2)).replace('.',',');
+//   });
+// });
 
-usuarios = $('#pagadores').data('usuarios')
 
-$('#pagadores select:last').prop('selectedIndex', -1)
+añadirOpción = function( selector, opción ) {
+  selector.append( new Option( opción.nombre, opción.id ) );
+  selector.prop( 'selectedIndex', -1 );
+  // TODO: Ordenar las opciones alfabéticamente.
+}
 
-// p class="form-control-static">email@example.com</p
+quitarOpción = function( selector, opción ) {
+  selector.find( 'option[value=' + opción.id + ']' ).remove();
+};
 
-$(document).ready( function() {
+añadirÍtem = function( repetible, ítem ) {
+  repetido = repetible.clone();
+
+  var selector = repetido.find( 'select' );
+  selector.val( ítem.id );
+  selector.prop( 'disabled', true );
+ 
+  repetido.find( 'input' ).val( ítem.monto );
+
+  repetible.parent().before( repetido );
+
+  ////
+  quitarOpción( repetible.find( 'select' ), ítem );
+}
+
+quitarÍtem = function(pagador) {
+  usuario = { id: pagador.find( 'select' ).first().val(),
+              nombre: pagador.find( 'select' ).first().text() }
+  pagador.remove();
+
+  ////
+  añadirOpción( selector, usuario );
+}
+
+repetible = $( '.repetible > .row' );
+
+$( document ).ready( function() {
+  usuarios = $( '.repetible' ).data( 'ítems' );
+  
   $.each( usuarios, function( index, usuario ) {
-    $( '#pagadores select:last' ).append( new Option( usuario.nombre, usuario.id ) );
+    añadirOpción( repetible.find( 'select' ), usuario );
+
+    if( usuario.monto ) {
+      añadirÍtem( repetible, usuario );
+    }
   });
 });
 
-agregarPagadores = function() {
-  selector = $('#pagadores .row:nth-last-child(2)');
-  clon = selector.clone();
-
-  clon.find('input').first().val('');
-  clon.insertAfter(selector);
-  $('#pagadores select:active').prop('disabled', true);
-}
-
-$( '#pagadores' ).on('change', 'select', agregarPagadores );
+contexto = $( '.repetible' ).parent();
 
 
+contexto.on( 'click', 'a', function() {
+  var pagador = $( this ).closest( '.row' );
+  quitarPagador(pagador);
+});
+
+
+
+repetible.find( 'select' ).change( function() {
+  usuario = $( this );
+  añadirÍtem( repetible, usuario );
+});
+
+
+// Principal
 
 $( 'tr' ).click( function() {
   window.location = $(this).data('href');

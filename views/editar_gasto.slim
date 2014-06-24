@@ -1,30 +1,34 @@
 .row
   .col-md-6
     form action='/gastos' method='post'
-      .row
-        .col-md-6
-          .form-group
-            label Concepto
-            input.form-control type='text' name='gasto[concepto]' value=@gasto.concepto
-        .col-md-6
-          .form-group
-            label Fecha
-            input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
-      
-      .form-group#pagadores data-usuarios=@usuarios.to_json
-        
-        label ¿Quiénes pagaron?
+      .form-group
         .row
           .col-md-6
             .form-group
-              select.form-control name='pagadores[][id]'
-          .col-md-5
+              label Concepto
+              input.form-control type='text' name='gasto[concepto]' value=@gasto.concepto
+          .col-md-6
             .form-group
-              .input-group
-                span.input-group-addon $
-                input.form-control type='text' name='pagadores[][monto]' 
-          .col.md-1
-            a.btn X
+              label Fecha
+              input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
+
+      .form-group
+        label ¿Quiénes pagaron?
+
+        .repetible data-ítems=@usuarios.to_json
+          .row
+            .col-md-6
+              .form-group
+                select.form-control name='pagadores[][id]'
+            .col-md-5
+              .form-group
+                .input-group
+                  span.input-group-addon $
+                  input.form-control type='number' name='pagadores[][monto]' 
+            .col.md-1
+              a.btn ✕
+
+        // Total
         .row
           .col-md-6
             .form-group
@@ -34,8 +38,9 @@
               .input-group
                 span.input-group-addon $
                 input.form-control disabled=true type='text' value=@gasto.monto.to_currency
-            /* .col-md-1 */
-            /*   span.glyphicon.glyphicon-remove */
+            // .col-md-1
+            //   span.glyphicon.glyphicon-remove
+      
       .form-group
         label ¿Para quiénes?
         br
@@ -43,5 +48,6 @@
         - Usuario.each do |usuario|
           label.checkbox-inline
             input checked=(participantes.include?(usuario.id)) type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
+      
       input type='hidden' name='id' value=@gasto.id
       button.btn.btn-primary.pull-right type='submit' Guardar
