@@ -14,15 +14,6 @@ var dp = $('#fecha').datepicker({
 // });
 
 
-// $( '#pagadores' ).on('change', 'input:enabled', function() {
-//   $('#pagadores input:disabled').val( function() {
-//     var sum = 0;
-//     $('#pagadores input:enabled').each( function() {
-//       sum += Number($(this).val().replace(',','.'));
-//     });
-//     return String(sum.toFixed(2)).replace('.',',');
-//   });
-// });
 
 
 añadirOpción = function( selector, opción ) {
@@ -39,13 +30,12 @@ quitarOpción = function( selector, opción ) {
 añadirÍtem = function( repetible, ítem ) {
   repetido = repetible.clone();
 
-  var selector = repetido.find( 'select' );
-  selector.val( ítem.id );
-  selector.prop( 'disabled', true );
-
+  repetido.find( 'select' ).val( ítem.id );
+  repetido.find( 'select' ).prop( 'disabled', true );
   repetido.find( 'input' ).val( ítem.monto );
+  repetido.find( 'a' ).removeClass( 'disabled' );
 
-  repetible.parent().before( repetido );
+  repetido.insertBefore( repetible.parent() );
 
   quitarOpción( repetible.find( 'select' ), ítem );
 }
@@ -69,15 +59,33 @@ $( document ).ready( function() {
   });
 });
 
-repetible.find( 'select' ).change( function() {
-  usuario = { id: $( this ).val() };
-  añadirÍtem( repetible, usuario );
+// Agrega un usuario cuando se sale del foco del selector.
+repetible.find( 'select' ).focusout( function() {
+  if( $( this ).val() ) {
+    usuario = { id: $( this ).val() };
+    añadirÍtem( repetible, usuario );
+    repetible.parent().prev().find( 'input' ).focus();
+  }
 });
 
+// Remueve un usuario cuando el botón de remover es apretado.
 $( '.repetible' ).parent().on( 'click', 'a', function() {
   usuario = $( this ).closest( '.row' ).find( 'select' ).children( ':selected' );
   usuario = { id: usuario.val(), nombre: usuario.text() }
   quitarÍtem( repetible, usuario );
+});
+
+// Formetea el monto y suma el total cuando el input cambia.
+$( '.repetible' ).parent().on( 'change', 'input[name="pagadores[][monto]"]', function() {
+  // $( this ).val( $( this ).val().replace('.',',') );
+		
+    // function() {
+    // var sum = 0;
+    // $('#pagadores input:enabled').each( function() {
+    //   sum += Number($(this).val().replace(',','.'));
+    // });
+    // return String(sum.toFixed(2)).replace('.',',');
+  // });
 });
 
 

@@ -26,7 +26,7 @@
                   span.input-group-addon $
                   input.form-control type='number' name='pagadores[][monto]' 
             .col.md-1
-              a.btn ✕
+              a.btn.disabled ✕
 
         // Total
         .row
@@ -37,10 +37,8 @@
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control disabled=true type='text' value=@gasto.monto.to_currency
-            // .col-md-1
-            //   span.glyphicon.glyphicon-remove
-      
+                input.form-control disabled=true type='number' name='total' value=@gasto.monto.to_currency
+
       .form-group
         label ¿Para quiénes?
         br
