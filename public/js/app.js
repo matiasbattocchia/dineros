@@ -32,7 +32,8 @@ añadirOpción = function( selector, opción ) {
 }
 
 quitarOpción = function( selector, opción ) {
-  selector.find( 'option[value=' + opción.id + ']' ).remove();
+  selector.children( 'option[value=' + opción.id + ']' ).remove();
+  selector.prop( 'selectedIndex', -1 );
 };
 
 añadirÍtem = function( repetible, ítem ) {
@@ -41,22 +42,17 @@ añadirÍtem = function( repetible, ítem ) {
   var selector = repetido.find( 'select' );
   selector.val( ítem.id );
   selector.prop( 'disabled', true );
- 
+
   repetido.find( 'input' ).val( ítem.monto );
 
   repetible.parent().before( repetido );
 
-  ////
   quitarOpción( repetible.find( 'select' ), ítem );
 }
 
-quitarÍtem = function(pagador) {
-  usuario = { id: pagador.find( 'select' ).first().val(),
-              nombre: pagador.find( 'select' ).first().text() }
-  pagador.remove();
-
-  ////
-  añadirOpción( selector, usuario );
+quitarÍtem = function( repetible, ítem ) {
+  repetible.parent().siblings( '.row' ).has( 'select option:selected[value=' + ítem.id + ']' ).remove();
+  añadirOpción( repetible.find( 'select' ), ítem );
 }
 
 repetible = $( '.repetible > .row' );
@@ -73,19 +69,15 @@ $( document ).ready( function() {
   });
 });
 
-contexto = $( '.repetible' ).parent();
-
-
-contexto.on( 'click', 'a', function() {
-  var pagador = $( this ).closest( '.row' );
-  quitarPagador(pagador);
+repetible.find( 'select' ).change( function() {
+  usuario = { id: $( this ).val() };
+  añadirÍtem( repetible, usuario );
 });
 
-
-
-repetible.find( 'select' ).change( function() {
-  usuario = $( this );
-  añadirÍtem( repetible, usuario );
+$( '.repetible' ).parent().on( 'click', 'a', function() {
+  usuario = $( this ).closest( '.row' ).find( 'select' ).children( ':selected' );
+  usuario = { id: usuario.val(), nombre: usuario.text() }
+  quitarÍtem( repetible, usuario );
 });
 
 
