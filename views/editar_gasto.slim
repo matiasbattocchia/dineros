@@ -14,19 +14,19 @@
 
       .form-group
         label ¿Quiénes pagaron?
+        .data data-ítems=@usuarios.to_json
 
-        .repetible data-ítems=@usuarios.to_json
-          .row
-            .col-md-6
-              .form-group
-                select.form-control name='pagadores[][id]'
-            .col-md-5
-              .form-group
-                .input-group
-                  span.input-group-addon $
-                  input.form-control type='number' name='pagadores[][monto]' 
-            .col.md-1
-              a.btn.disabled ✕
+        .row.repetible
+          .col-md-6
+            .form-group
+              select.form-control name='pagadores[][id]'
+          .col-md-5
+            .form-group
+              .input-group
+                span.input-group-addon $
+                input.form-control type='text' name='pagadores[][monto]' disabled=true
+          .col.md-1
+            a.btn.disabled ✕
 
         // Total
         .row
@@ -37,7 +37,7 @@
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control disabled=true type='number' name='total' value=@gasto.monto.to_currency
+                input.form-control type='text' name='total' value=@gasto.monto.to_currency disabled=true
 
       .form-group
         label ¿Para quiénes?
@@ -46,6 +46,6 @@
         - Usuario.each do |usuario|
           label.checkbox-inline
             input checked=(participantes.include?(usuario.id)) type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
-      
+
       input type='hidden' name='id' value=@gasto.id
       button.btn.btn-primary.pull-right type='submit' Guardar

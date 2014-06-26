@@ -98,23 +98,27 @@ post '/gastos' do
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   gasto = Gasto.create params[:gasto]
-  
-  params[:pagadores].delete_if { |i| i[:id].empty? }
 
-  params[:pagadores].each do |prestamista|
+  # params[:pagadores].delete_if { |i| i[:id].empty? }
+
+  params[:pagadores].each do |pagador|
     aporte = gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
     Usuario.find(pagador[:id]).aportes << aporte
   end
 
-  Usuario.find(params[:gastadores]).each do |gastador|
-    participación = gasto.participaciones.new(proporción: 1.0 / params[:gastadores].length)
-    gastador.participaciones << participación
-
-    gasto.aportes.each do |aporte|
-      deuda = aporte.monto * participación.proporción
-      gastador.toma(aporte.usuario, deuda)
-    end
+  params[:gastadores].each do |gastador|
+    gasto.participaciones.new
   end
+
+  # Usuario.find(params[:gastadores]).each do |gastador|
+  #   participación = gasto.participaciones.new(proporción: 1.0 / params[:gastadores].length)
+  #   gastador.participaciones << participación
+
+  #   gasto.aportes.each do |aporte|
+  #     deuda = aporte.monto * participación.proporción
+  #     gastador.toma(aporte.usuario, deuda)
+  #   end
+  # end
 
   redirect to '/gastos'
 end
