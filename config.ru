@@ -1,3 +1,5 @@
+#\ -s puma -p 9999
+
 require 'bundler'
 
 Bundler.require
@@ -21,6 +23,7 @@ use Rack::Session::Cookie,
   :secret => 'change_me'
 
 use Rack::Flash
+use Rack::MethodOverride
 
 require './app'
 

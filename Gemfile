@@ -5,6 +5,7 @@ gem 'tilt', '~> 1.4'
 gem 'slim'
 gem 'mongoid'
 gem 'rack-flash3', require: 'rack-flash'
+gem  'puma'
 
 group :develoment do
   gem 'pry'

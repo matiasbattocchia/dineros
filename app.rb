@@ -66,7 +66,6 @@ class Participación
 
   field :proporción, type: Float
 
-  validates_numericality_of :proporción, less_than_or_equal_to: 1
   validates_numericality_of :proporción, greater_than: 0
 end
 
@@ -107,7 +106,8 @@ post '/gastos' do
   end
 
   params[:gastadores].each do |gastador|
-    gasto.participaciones.new
+    participación = gasto.participaciones.new(proporción: gastador[:proporción])
+    Usuario.find(gastador[:id]).participaciones << participación
   end
 
   # Usuario.find(params[:gastadores]).each do |gastador|
@@ -129,6 +129,12 @@ get '/gastos/:id' do
   slim :editar_gasto
 end
 
+delete '/gastos/:id' do
+  Gasto.find(params[:id]).destroy unless params[:id].empty?
+
+  redirect to '/gastos'
+end
+
 def aportantes gasto
-  Usuario.all.map{ |u| {id: u.id, nombre: u.nombre, monto: if aporte = u.aportes.find_by(gasto_id: gasto.id) then aporte.monto end} }
+  Usuario.all.map{ |u| {id: u.id, nombre: u.nombre, monto: if aporte = u.aportes.find_by(gasto_id: gasto.id) then aporte.monto end, proporción: if participación = u.participaciones.find_by(gasto_id: gasto.id) then participación.proporción end} }
 end

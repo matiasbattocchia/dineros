@@ -1,26 +1,27 @@
 .row
   .col-md-6
-    form action='/gastos' method='post'
+    form action='/gastos' method='post' data-usuarios=@usuarios.to_json
+      input type='hidden' name='id' value=@gasto.id
+
       .form-group
         .row
-          .col-md-6
+          .col-xs-6
             .form-group
               label Concepto
               input.form-control type='text' name='gasto[concepto]' value=@gasto.concepto
-          .col-md-6
+          .col-xs-6
             .form-group
               label Fecha
               input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
 
       .form-group
         label ¿Quiénes pagaron?
-        .data data-ítems=@usuarios.to_json
 
-        .row.repetible
-          .col-md-6
+        .row.repetible.pagador
+          .col-xs-6
             .form-group
               select.form-control name='pagadores[][id]'
-          .col-md-5
+          .col-xs-5
             .form-group
               .input-group
                 span.input-group-addon $
@@ -28,24 +29,34 @@
           .col.md-1
             a.btn.disabled ✕
 
-        // Total
         .row
-          .col-md-6
+          .col-xs-6
             .form-group
               h4.pull-right Total
-          .col-md-5
+          .col-xs-5
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control type='text' name='total' value=@gasto.monto.to_currency disabled=true
+                input.form-control type='text' name='total' disabled=true
 
       .form-group
         label ¿Para quiénes?
-        br
-        - participantes = @gasto.participaciones.map{ |part| part.usuario.id }
-        - Usuario.each do |usuario|
-          label.checkbox-inline
-            input checked=(participantes.include?(usuario.id)) type='checkbox' name='gastadores[]' value=usuario.id = usuario.nombre
 
-      input type='hidden' name='id' value=@gasto.id
+        .row.repetible.gastador
+          .col-xs-6
+            .form-group
+              select.form-control name='gastadores[][id]'
+          .col-xs-5
+            .form-group
+              .input-group
+                span.input-group-addon ✕
+                input.form-control type='text' name='gastadores[][proporción]' value=1 disabled=true
+          .col.md-1
+            a.btn.disabled ✕
+
       button.btn.btn-primary.pull-right type='submit' Guardar
+
+    - if @gasto.id
+      form action="/gastos/#{@gasto.id}" method='post'
+        input type='hidden' name='_method' value='delete'
+        button.btn.btn-default.pull-right type='submit' Eliminar
