@@ -11,3 +11,10 @@ test:
       database: gastos_prueba
       hosts:
         - localhost
+
+production:
+  sessions:
+    default:
+      database: gastos_produccion
+      hosts:
+        - localhost

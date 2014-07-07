@@ -117,10 +117,9 @@ $( '.repetible' ).parent().on( 'click', 'a', function() {
 
   quitarÍtem( $( this ).closest( '.row' ).siblings( '.repetible' ), usuario );
 
-  // Oculta el selector cuando no quedan opciones.
-  if( repetible.find( 'option' ).length > 0 ) {
-    repetible.show();
-  }
+  calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
+	
+	repetible.show();
 });
 
 // Formatea el monto y suma el total cuando el input cambia.

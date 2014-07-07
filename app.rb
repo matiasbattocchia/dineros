@@ -1,3 +1,31 @@
+require 'bundler'
+Bundler.require
+#################
+
+set :bind, '0.0.0.0'
+
+Mongoid.load!('./mongoid.yml')
+Mongoid.raise_not_found_error = false
+
+ActiveSupport::Inflector.inflections do |inflect|
+  inflect.irregular 'usuario', 'usuarios'
+  inflect.irregular 'gasto', 'gastos'
+  inflect.irregular 'aporte', 'aportes'
+  inflect.irregular 'participación', 'participaciones'
+  inflect.irregular 'cuenta', 'cuentas'
+end
+
+use Rack::MethodOverride
+
+use Rack::Session::Cookie,
+  :key => 'rack.session',
+  :domain => 'foo.com',
+  :path => '/',
+  :expire_after => 2592000,
+  :secret => 'change_me'
+
+use Rack::Flash
+
 class Float
   def to_currency currency=''
     currency + ('%.2f' % self).gsub('.', ',')
@@ -51,6 +79,7 @@ class Aporte
   include Mongoid::Document
 
   belongs_to :usuario
+  # embedded_in :gasto
   belongs_to :gasto
 
   field :monto, type: Float
@@ -62,6 +91,7 @@ class Participación
   include Mongoid::Document
 
   belongs_to :usuario
+  # embedded_in :gasto
   belongs_to :gasto
 
   field :proporción, type: Float

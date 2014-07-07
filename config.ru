@@ -1,4 +1,3 @@
-#\ -s puma -p 9999
 
 require 'bundler'
 
