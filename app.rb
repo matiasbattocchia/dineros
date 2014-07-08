@@ -26,6 +26,15 @@ use Rack::Session::Cookie,
 
 use Rack::Flash
 
+helpers do
+  def protegido!
+    unless session[:usuario]
+      session[:volver_a] = request.fullpath
+      redirect to '/entrar'
+    end
+  end
+end
+
 class Float
   def to_currency currency=''
     currency + ('%.2f' % self).gsub('.', ',')
@@ -46,6 +55,9 @@ class Usuario
   has_and_belongs_to_many :cuentas
 
   field :nombre, type: String
+  field :correo
+  field :contraseña
+  field :sal
 
   def toma prestatario, dinero
     cuenta = Cuenta.find_or_initialize_by(usuario_ids: [self.id, prestatario.id].sort)
@@ -111,6 +123,20 @@ get '/' do
   redirect to '/gastos'
 end
 
+get '/entrar' do
+  puts '########'
+  puts session[:usuario].nombre if session[:nombre]
+  slim :entrar
+end
+
+post '/entrar' do
+  if session[:usuario] = Usuario.find_by(correo: params[:correo])
+    redirect to '/gastos' #session[:volver_a]
+  else
+    redirect to '/entrar'
+  end
+end
+
 get '/gastos/nuevo' do
   @gasto = Gasto.new
   @gasto.id = nil
@@ -119,6 +145,8 @@ get '/gastos/nuevo' do
 end
 
 get '/gastos' do
+  protegido!
+
   @gastos = Gasto.desc(:fecha)
   slim :gastos
 end
