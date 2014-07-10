@@ -56,7 +56,7 @@ calcularTotal = function( fuentes, objetivo ) {
 };
 
 $( document ).ready( function() {
-  usuarios = $( 'form' ).data( 'usuarios' );
+  usuarios = $( 'form#gastos' ).data( 'usuarios' );
 
   $.each( usuarios, function( index, usuario ) {
     añadirOpción( $( '.repetible select' ), usuario );
@@ -118,7 +118,7 @@ $( '.repetible' ).parent().on( 'click', 'a', function() {
   quitarÍtem( $( this ).closest( '.row' ).siblings( '.repetible' ), usuario );
 
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
-	
+
 	repetible.show();
 });
 

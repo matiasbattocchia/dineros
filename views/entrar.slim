@@ -1,6 +1,7 @@
-form method='post' action='/entrar'
-  input name='correo' type='text'
-  button.btn value='submit' Entrar
-
-#{session[:volver_a]}
-
+.row
+  .col-md-offset-4.col-md-4
+    .well
+      form method='post' action='/entrar'
+        .form-group
+          input.form-control type='text' name='correo'
+        button.btn.btn-primary.btn-block type='submit' Entrar

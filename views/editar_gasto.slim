@@ -1,6 +1,8 @@
+h1 Editar gasto
+
 .row
   .col-md-6
-    form action='/gastos' method='post' data-usuarios=@usuarios.to_json
+    form#gastos action='/gastos' method='post' data-usuarios=@usuarios.to_json
       input type='hidden' name='id' value=@gasto.id
 
       .form-group

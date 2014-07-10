@@ -18,17 +18,17 @@ end
 use Rack::MethodOverride
 
 use Rack::Session::Cookie,
-  :key => 'rack.session',
-  :domain => 'foo.com',
-  :path => '/',
-  :expire_after => 2592000,
   :secret => 'change_me'
 
 use Rack::Flash
 
 helpers do
+  def usuario
+    session[:usuario]
+  end
+
   def protegido!
-    unless session[:usuario]
+    unless usuario
       session[:volver_a] = request.fullpath
       redirect to '/entrar'
     end
@@ -124,24 +124,28 @@ get '/' do
 end
 
 get '/entrar' do
-  puts '########'
-  puts session[:usuario].nombre if session[:nombre]
   slim :entrar
 end
 
 post '/entrar' do
   if session[:usuario] = Usuario.find_by(correo: params[:correo])
-    redirect to '/gastos' #session[:volver_a]
+    redirect back
   else
     redirect to '/entrar'
   end
 end
 
-get '/gastos/nuevo' do
-  @gasto = Gasto.new
-  @gasto.id = nil
-  @usuarios = aportantes(@gasto)
-  slim :editar_gasto
+post '/salir' do
+  protegido!
+
+  session[:usuario] = nil
+  redirect to '/entrar'
+end
+
+get '/perfil' do
+  protegido!
+
+  slim :perfil
 end
 
 get '/gastos' do
@@ -151,7 +155,18 @@ get '/gastos' do
   slim :gastos
 end
 
+get '/gastos/nuevo' do
+  protegido!
+
+  @gasto = Gasto.new
+  @gasto.id = nil
+  @usuarios = aportantes(@gasto)
+  slim :editar_gasto
+end
+
 post '/gastos' do
+  protegido!
+
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   gasto = Gasto.create params[:gasto]
@@ -182,12 +197,16 @@ post '/gastos' do
 end
 
 get '/gastos/:id' do
+  protegido!
+
   @gasto = Gasto.find params[:id]
   @usuarios = aportantes(@gasto)
   slim :editar_gasto
 end
 
 delete '/gastos/:id' do
+  protegido!
+
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   redirect to '/gastos'

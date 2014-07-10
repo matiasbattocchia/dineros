@@ -9,7 +9,7 @@ html
       link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css'
     - else
       link href='/bootstrap/css/bootstrap.css' type='text/css' rel='stylesheet'
-    
+
     link href='/bootstrap-datepicker/css/datepicker3.css' type='text/css' rel='stylesheet'
     link href='/css/app.css' type='text/css' rel='stylesheet'
     link href='/favicon.png' type='image/png' rel='icon'
@@ -19,8 +19,23 @@ html
     meta name='viewport' content='width=device-width, initial-scale=1'
 
   body
+    - if usuario
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            a.navbar-brand href='#' Dineros
+
+          ul.navbar-nav.nav
+            li
+              a href='/gastos/nuevo' Nuevo
+
+          form.navbar-form.navbar-right action='/salir' method='post'
+            button.btn.btn-default.navbar-btn type='submit' Salir
+
+          p.navbar-text.navbar-right
+            a.navbar-link href='/perfil' = usuario.nombre
+
     .container
-      h1 Gastos
 
       - if flash[:message]
         div.alert.alert-success = flash[:message]
