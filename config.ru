@@ -1,4 +1,4 @@
-
+#\ -s puma -q
 require 'bundler'
 
 Bundler.require

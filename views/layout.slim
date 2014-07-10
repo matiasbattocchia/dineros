@@ -19,23 +19,22 @@ html
     meta name='viewport' content='width=device-width, initial-scale=1'
 
   body
-    - if usuario
-      nav.navbar.navbar-default
-        .container-fluid
+    .container
+
+      - if usuario
+        .navbar.navbar-default
           .navbar-header
-            a.navbar-brand href='#' Dineros
+            a.navbar-brand href='/gastos' Dineros
 
           ul.navbar-nav.nav
             li
-              a href='/gastos/nuevo' Nuevo
+              a href='/gastos/nuevo' Nuevo gasto
 
           form.navbar-form.navbar-right action='/salir' method='post'
-            button.btn.btn-default.navbar-btn type='submit' Salir
+            button.btn.btn-default type='submit' Salir
 
           p.navbar-text.navbar-right
             a.navbar-link href='/perfil' = usuario.nombre
-
-    .container
 
       - if flash[:message]
         div.alert.alert-success = flash[:message]

@@ -100,6 +100,8 @@ $( '.repetible select' ).focusout( function() {
       $( this ).closest( '.repetible' ).hide();
     }
 
+    // Comúnmente quienes pagan también gastan. Esto agrega al usuario
+    // como gastador automá
     // if( $( this ).closest( '.repetible' ).hasClass( 'pagador' ) ) {
     //   añadirÍtem( $( '.repetible.gastador' ), usuario );
     // }
@@ -117,9 +119,11 @@ $( '.repetible' ).parent().on( 'click', 'a', function() {
 
   quitarÍtem( $( this ).closest( '.row' ).siblings( '.repetible' ), usuario );
 
+  // Repite el cálculo del gasto total cuando un pagador es retirado.
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 
-	repetible.show();
+  // Al quitar un repetido siempre vuelve a haber al menos un usuario para elegir.
+  repetible.show();
 });
 
 // Formatea el monto y suma el total cuando el input cambia.

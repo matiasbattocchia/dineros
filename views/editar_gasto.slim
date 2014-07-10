@@ -44,21 +44,27 @@ h1 Editar gasto
       .form-group
         label ¿Para quiénes?
 
+        .form-group
+          .btn-group data-toggle='buttons'
+            label.btn.btn-primary
+              input type='checkbox' Gastos desiguales
+
         .row.repetible.gastador
           .col-xs-6
             .form-group
               select.form-control name='gastadores[][id]'
-          .col-xs-5
+          .col-xs-5 hidden=true
             .form-group
               .input-group
                 span.input-group-addon ✕
-                input.form-control type='text' name='gastadores[][proporción]' value=1 disabled=true
+                input.form-control type='text' name='gastadores[][proporción]' disabled=true
           .col.md-1
             a.btn.disabled ✕
 
-      button.btn.btn-primary.pull-right type='submit' Guardar
+      button.btn.btn-primary type='submit' value='guardar' Guardar
+      /* button.btn.btn-default type='submit' value='eliminar' Eliminar */
 
     - if @gasto.id
-      form action="/gastos/#{@gasto.id}" method='post'
+      form#eliminar action="/gastos/#{@gasto.id}" method='post'
         input type='hidden' name='_method' value='delete'
-        button.btn.btn-default.pull-right type='submit' Eliminar
+        button.btn.btn-default type='submit' Eliminar

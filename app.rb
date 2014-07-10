@@ -129,7 +129,10 @@ end
 
 post '/entrar' do
   if session[:usuario] = Usuario.find_by(correo: params[:correo])
-    redirect back
+    redirect to '/gastos'
+    # redirect back tiene el problema de no redirigir a ninguna parte
+    # si la landing page fue '/entrar'.
+    # redirect back
   else
     redirect to '/entrar'
   end
