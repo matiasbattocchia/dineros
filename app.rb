@@ -50,40 +50,54 @@ end
 class Usuario
   include Mongoid::Document
 
-  has_many :aportes, dependent: :restrict
-  has_many :participaciones, dependent: :restrict
-  has_and_belongs_to_many :cuentas
+  # has_many :aportes, dependent: :restrict
+  # has_many :participaciones, dependent: :restrict
+  # has_and_belongs_to_many :cuentas
 
   field :nombre, type: String
-  field :correo
-  field :contraseña
-  field :sal
+  field :correo, type: String
+  field :contraseña, type: String
+  field :sal, type: String
 
-  def toma prestatario, dinero
-    cuenta = Cuenta.find_or_initialize_by(usuario_ids: [self.id, prestatario.id].sort)
-    cuenta.inc(:monto, dinero)
-  end
+  # def toma prestatario, dinero
+  #   cuenta = Cuenta.find_or_initialize_by(usuario_ids: [self.id, prestatario.id].sort)
+  #   cuenta.inc(:monto, dinero)
+  # end
+end
+
+class Contrato
+  include Mongoid::Document
+
+  embedded_in :parte, as:
+  belongs_to  :contraparte, as:
+
+  field :límite
 end
 
 class Gasto
   include Mongoid::Document
 
-  has_many :aportes, dependent: :destroy
-  has_many :participaciones, dependent: :destroy
+  # has_many :aportes, dependent: :destroy
+  # has_many :participaciones, dependent: :destroy
+
+  embeds_many :aportes
+  embeds_many :participaciones
 
   field :concepto, type: String
   field :fecha, type: Time
 
   def monto
-    aportes.sum(:monto).to_f
+    aportes.sum(:monto)
   end
 
   def pagadores
-    aportes.map{ |aporte| aporte.usuario.nombre }.join(', ')
+    # Los datos del usuario se podrían denormalizar.
+    aportes.map{ |aporte| {id: aporte.usuario.id, nombre: aporte.usuario.nombre, monto: aporte.monto} }
   end
 
   def gastadores
-    participaciones.map{ |part| part.usuario.nombre }.join(', ')
+    # Los datos del usuario se podrían denormalizar.
+    participaciones.map{ |participación| {id: participación.usuario.id, nombre: participación.usuario.nombre, proporción: participación.proporción} }
   end
 end
 
@@ -91,8 +105,8 @@ class Aporte
   include Mongoid::Document
 
   belongs_to :usuario
-  # embedded_in :gasto
-  belongs_to :gasto
+  embedded_in :gasto
+  #belongs_to :gasto
 
   field :monto, type: Float
 
@@ -103,8 +117,8 @@ class Participación
   include Mongoid::Document
 
   belongs_to :usuario
-  # embedded_in :gasto
-  belongs_to :gasto
+  embedded_in :gasto
+  #belongs_to :gasto
 
   field :proporción, type: Float
 
@@ -154,7 +168,8 @@ end
 get '/gastos' do
   protegido!
 
-  @gastos = Gasto.desc(:fecha)
+  @gastos = Gasto.or({'aportes.usuario_id' => usuario.id}, {'participaciones.usuario_id' => usuario.id}).desc(:fecha)
+
   slim :gastos
 end
 
@@ -178,13 +193,15 @@ post '/gastos' do
 
   params[:pagadores].each do |pagador|
     aporte = gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
-    Usuario.find(pagador[:id]).aportes << aporte
+    aporte.usuario = Usuario.find(pagador[:id])
   end
 
   params[:gastadores].each do |gastador|
-    participación = gasto.participaciones.new(proporción: gastador[:proporción])
-    Usuario.find(gastador[:id]).participaciones << participación
+    participación = gasto.participaciones.new(proporción: gastador[:proporción] || 1)
+    participación.usuario = Usuario.find(gastador[:id])
   end
+
+  gasto.save
 
   # Usuario.find(params[:gastadores]).each do |gastador|
   #   participación = gasto.participaciones.new(proporción: 1.0 / params[:gastadores].length)
@@ -203,7 +220,7 @@ get '/gastos/:id' do
   protegido!
 
   @gasto = Gasto.find params[:id]
-  @usuarios = aportantes(@gasto)
+
   slim :editar_gasto
 end
 
@@ -213,8 +230,4 @@ delete '/gastos/:id' do
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   redirect to '/gastos'
-end
-
-def aportantes gasto
-  Usuario.all.map{ |u| {id: u.id, nombre: u.nombre, monto: if aporte = u.aportes.find_by(gasto_id: gasto.id) then aporte.monto end, proporción: if participación = u.participaciones.find_by(gasto_id: gasto.id) then participación.proporción end} }
 end
