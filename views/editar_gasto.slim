@@ -46,14 +46,14 @@ h1 Editar gasto
 
         .form-group
           .btn-group data-toggle='buttons'
-            label.btn.btn-primary
-              input type='checkbox' Gastos desiguales
+            label.btn.btn-default
+              input type='checkbox' name='gasto_desigual' Gasto desigual
 
         .row.repetible.gastador
           .col-xs-6
             .form-group
               select.form-control name='gastadores[][id]'
-          .col-xs-5 hidden=true
+          .col-xs-5.proporción
             .form-group
               .input-group
                 span.input-group-addon ✕

@@ -58,6 +58,8 @@ calcularTotal = function( fuentes, objetivo ) {
 $( document ).ready( function() {
   usuarios = $( 'form#gastos' ).data( 'usuarios' );
 
+  proporciónDesigual = false;
+
   $.each( usuarios, function( index, usuario ) {
     añadirOpción( $( '.repetible select' ), usuario );
 
@@ -67,8 +69,17 @@ $( document ).ready( function() {
 
     if( usuario.proporción ) {
       añadirÍtem( $( '.repetible.gastador' ), usuario, 'proporción' );
+
+      if( usuario.proporción != 1 ) { proporciónDesigual = true; }
     }
   });
+
+  if( proporciónDesigual ) {
+    // $( 'input[type=checkbox]' ).prop( 'checked', true );
+    $( 'input[type=checkbox]' ).parent().addClass( 'active' );
+  } else {
+    $( '.proporción' ).hide();
+  }
 
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 });
@@ -136,6 +147,14 @@ $( '.repetible' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', func
 // Habilita los selects para incluirlos en el formulario al enviarlo.
 $( 'form' ).submit( function() {
   $( 'select:disabled' ).prop( 'disabled', false );
+});
+
+$( 'input[type=checkbox]' ).change( function() {
+  if( $( this ).is( ':checked' ) ) {
+    $( '.proporción' ).show();
+  } else {
+    $( '.proporción' ).hide();
+  }
 });
 
 // Principal

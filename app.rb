@@ -169,6 +169,7 @@ end
 
 post '/gastos' do
   protegido!
+  puts params
 
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
