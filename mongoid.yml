@@ -4,6 +4,8 @@ development:
       database: gastos_desarrollo
       hosts:
         - localhost
+      options:
+        safe: true
 
 test:
   sessions:
@@ -11,6 +13,8 @@ test:
       database: gastos_prueba
       hosts:
         - localhost
+      options:
+        safe: true
 
 production:
   sessions:
