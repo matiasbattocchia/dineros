@@ -4,8 +4,20 @@ Bundler.require
 
 set :bind, '0.0.0.0'
 
+I18n.enforce_available_locales = true
+
 Mongoid.load!('./mongoid.yml')
 Mongoid.raise_not_found_error = false
+
+module Mongoid
+  module Document
+    def as_json(options={})
+      attrs = super(options)
+      attrs['id'] = attrs.delete('_id')
+      attrs
+    end
+  end
+end
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'usuario', 'usuarios'
@@ -59,6 +71,10 @@ class Usuario
   field :contraseña, type: String
   field :sal, type: String
 
+  def amigos
+    Usuario.all
+  end
+
   # def toma prestatario, dinero
   #   cuenta = Cuenta.find_or_initialize_by(usuario_ids: [self.id, prestatario.id].sort)
   #   cuenta.inc(:monto, dinero)
@@ -68,17 +84,13 @@ end
 class Contrato
   include Mongoid::Document
 
-  embedded_in :parte, as:
-  belongs_to  :contraparte, as:
-
+  field :partes
   field :límite
+  field :estado
 end
 
 class Gasto
   include Mongoid::Document
-
-  # has_many :aportes, dependent: :destroy
-  # has_many :participaciones, dependent: :destroy
 
   embeds_many :aportes
   embeds_many :participaciones
@@ -118,7 +130,6 @@ class Participación
 
   belongs_to :usuario
   embedded_in :gasto
-  #belongs_to :gasto
 
   field :proporción, type: Float
 
@@ -178,31 +189,34 @@ get '/gastos/nuevo' do
 
   @gasto = Gasto.new
   @gasto.id = nil
-  @usuarios = aportantes(@gasto)
+
   slim :editar_gasto
 end
 
 post '/gastos' do
   protegido!
-  puts params
+
+  flash[:message] = params.to_s
 
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
   gasto = Gasto.create params[:gasto]
 
-  # params[:pagadores].delete_if { |i| i[:id].empty? }
-
   params[:pagadores].each do |pagador|
     aporte = gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
+    # TODO: El usuario debería estar entre los amigos.
     aporte.usuario = Usuario.find(pagador[:id])
   end
 
   params[:gastadores].each do |gastador|
-    participación = gasto.participaciones.new(proporción: gastador[:proporción] || 1)
+    participación = gasto.participaciones.new(proporción: (gasto[:gasto_desigual] and gastador[:proporción] or 1))
+
+    # TODO: El usuario debería estar entre los amigos.
     participación.usuario = Usuario.find(gastador[:id])
   end
 
   gasto.save
+  puts gasto.errors.messages
 
   # Usuario.find(params[:gastadores]).each do |gastador|
   #   participación = gasto.participaciones.new(proporción: 1.0 / params[:gastadores].length)

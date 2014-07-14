@@ -56,28 +56,31 @@ calcularTotal = function( fuentes, objetivo ) {
 };
 
 $( document ).ready( function() {
-  usuarios = $( 'form#gastos' ).data( 'usuarios' );
+  amigos = $( 'form[action="/gastos"]' ).data( 'amigos' );
+  pagadores = $( 'form[action="/gastos"]' ).data( 'pagadores' );
+  gastadores = $( 'form[action="/gastos"]' ).data( 'gastadores' );
 
   proporciónDesigual = false;
 
-  $.each( usuarios, function( index, usuario ) {
+  $.each( amigos, function( index, usuario ) {
     añadirOpción( $( '.repetible select' ), usuario );
+  });
 
-    if( usuario.monto ) {
-      añadirÍtem( $( '.repetible.pagador' ), usuario, 'monto' );
-    }
+  $.each( pagadores, function( index, usuario ) {
+    añadirÍtem( $( '.repetible.pagador' ), usuario, 'monto' );
+  });
 
-    if( usuario.proporción ) {
-      añadirÍtem( $( '.repetible.gastador' ), usuario, 'proporción' );
+  $.each( gastadores, function( index, usuario ) {
+    añadirÍtem( $( '.repetible.gastador' ), usuario, 'proporción' );
 
-      if( usuario.proporción != 1 ) { proporciónDesigual = true; }
-    }
+    if( usuario.proporción != 1 ) { proporciónDesigual = true; }
   });
 
   if( proporciónDesigual ) {
     // $( 'input[type=checkbox]' ).prop( 'checked', true );
     $( 'input[type=checkbox]' ).parent().addClass( 'active' );
   } else {
+    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', true );
     $( '.proporción' ).hide();
   }
 
@@ -98,7 +101,7 @@ $( '.repetible select' ).focusout( function() {
   if( $( this ).val() ) {
     // Acá se definen los valores por defecto de los repetidos.
     // En la vista se definen los valores por defecto de los repetibles.
-    usuario = { id: $( this ).val(), proporción: 1 };
+    usuario = { id: $( this ).val() };
 
     if( $( this ).closest( '.repetible' ).hasClass( 'pagador' ) ) {
       añadirÍtem( $( this ).closest( '.repetible' ), usuario, 'monto' );
@@ -112,7 +115,7 @@ $( '.repetible select' ).focusout( function() {
     }
 
     // Comúnmente quienes pagan también gastan. Esto agrega al usuario
-    // como gastador automá
+    // como gastador automáticamente.
     // if( $( this ).closest( '.repetible' ).hasClass( 'pagador' ) ) {
     //   añadirÍtem( $( '.repetible.gastador' ), usuario );
     // }
@@ -145,20 +148,22 @@ $( '.repetible' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', func
 });
 
 // Habilita los selects para incluirlos en el formulario al enviarlo.
-$( 'form' ).submit( function() {
+$( 'form[action="/gastos"]' ).submit( function() {
   $( 'select:disabled' ).prop( 'disabled', false );
 });
 
-$( 'input[type=checkbox]' ).change( function() {
+$( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   if( $( this ).is( ':checked' ) ) {
     $( '.proporción' ).show();
+    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', false );
   } else {
+    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', true );
     $( '.proporción' ).hide();
   }
 });
 
 // Principal
 
-$( 'tr' ).click( function() {
+$( 'tbody > tr' ).click( function() {
   window.location = $( this ).data( 'href' );
 });
