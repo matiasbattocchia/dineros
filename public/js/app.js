@@ -56,6 +56,7 @@ calcularTotal = function( fuentes, objetivo ) {
 };
 
 $( document ).ready( function() {
+
   amigos = $( 'form[action="/gastos"]' ).data( 'amigos' );
   pagadores = $( 'form[action="/gastos"]' ).data( 'pagadores' );
   gastadores = $( 'form[action="/gastos"]' ).data( 'gastadores' );
@@ -148,9 +149,9 @@ $( '.repetible' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', func
 });
 
 // Habilita los selects para incluirlos en el formulario al enviarlo.
-$( 'form[action="/gastos"]' ).submit( function() {
-  $( 'select:disabled' ).prop( 'disabled', false );
-});
+// $( 'form[action="/gastos"]' ).submit( function() {
+//   $( 'select:disabled' ).prop( 'disabled', false );
+// });
 
 $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   if( $( this ).is( ':checked' ) ) {
@@ -165,24 +166,37 @@ $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
 // Typeahead
 
 var engine = new Bloodhound({
-  name: 'animals',
-  local: [{value: 'doll'}, { value: 'dog' }, { value: 'dog' }, { value: 'pig' }, { value: 'moose' }],
-  //remote: 'http://example.com/animals?q=%QUERY',
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
-  // datumTokenizer: function(d) {
-  //     return Bloodhound.tokenizers.whitespace(d.value);
-  //   },
+  name: 'amigos',
+  local: $( 'form[action="/gastos"]' ).data( 'amigos' ),
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace( 'nombre' ),
   queryTokenizer: Bloodhound.tokenizers.whitespace,
 });
 
 engine.initialize();
 
-$('#pagadores').typeahead({
+$( 'form[action="/gastos"]' ).on( 'typeahead:autocompleted', '.typeahead', function(object, datum, name) {
+  $( this ).closest( '.form-group' ).children( 'input[type=hidden]' ).val( datum.id );
+  // $( this ).closest( '.form-group' ).addClass( 'has-success' );
+});
+
+// Eventos
+
+$( '.agregar' ).click( function() {
+  var repetible = $( this ).closest( '.row' ).siblings( '.repetible' );
+  var repetido = repetible.clone();
+  repetible.removeClass( 'repetible' );
+  repetido.insertAfter( repetible );
+  repetido.show();
+
+repetido.find( '.typeahead' ).typeahead({
   minLength: 0,
   highlight: true,
+  hint: true,
 },
 {
+  displayKey: 'nombre',
   source: engine.ttAdapter(),
+});
 });
 
 // Principal

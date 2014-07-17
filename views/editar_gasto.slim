@@ -20,22 +20,23 @@ h1 Editar gasto
       .form-group
         label ¿Quiénes pagaron?
 
-        .row.repetible.pagador
+        .row.repetible
           .col-xs-6
             .form-group
               input type='hidden' name='pagadores[][id]'
-              input.form-control#pagadores type='text'
+              input.form-control.typeahead type='text'
           .col-xs-5
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control type='text' name='pagadores[][monto]' disabled=true
+                input.form-control type='text' name='pagadores[][monto]'
           .col.md-1
-            a.btn.disabled ✕
+            a.btn ✕
 
         .row
           .col-xs-6
             .form-group
+              button.btn.btn-default.agregar type='button' Agregar
               h4.pull-right Total
           .col-xs-5
             .form-group
@@ -54,12 +55,13 @@ h1 Editar gasto
         .row.repetible.gastador
           .col-xs-6
             .form-group
-              select.form-control name='gastadores[][id]'
+              input type='hidden' name='gastadores[][id]'
+              input.form-control.typeahead type='text'
           .col-xs-5.proporción
             .form-group
               .input-group
                 span.input-group-addon ✕
-                input.form-control type='text' name='gastadores[][proporción]' disabled=true
+                input.form-control type='text' name='gastadores[][proporción]'
           .col.md-1
             a.btn.disabled ✕
 

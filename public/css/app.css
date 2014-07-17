@@ -1,3 +1,7 @@
+.repetible {
+  display: none;
+}
+
 tbody tr:hover {
   cursor: pointer;
 }
@@ -11,13 +15,108 @@ body {
   margin-bottom: 20px;
 }
 
-form#gastos, form#eliminar {
-  display: inline;
+.twitter-typeahead {
+  display: block !important;
 }
 
-form#eliminar {
-  margin-left: 7px;
+/* <span class="tt-dropdown-menu"> */
+/*   {{#datasets}} */
+/*     <div class="tt-dataset-{{name}}"> */
+/*       {{{header}}} */
+/*       <span class="tt-suggestions"> */
+/*         {{#suggestions}} */
+/*           <div class="tt-suggestion">{{{suggestion}}}</div> */
+/*         {{/suggestions}} */
+/*         {{^suggestions}} */
+/*           {{{empty}}} */
+/*         {{/suggestions}} */
+/*       </span> */
+/*       {{{footer}}} */
+/*     </div> */
+/*   {{/datasets}} */
+/* </span> */
+
+/* tt-cursor */
+
+.typeahead,
+.tt-query,
+.tt-hint {
+  /* width: 396px; */
+  /* height: 30px; */
+  /* padding: 8px 12px; */
+  /* font-size: 24px; */
+  /* line-height: 30px; */
+  /* border: 2px solid #ccc; */
+  /* -webkit-border-radius: 8px; */
+  /*    -moz-border-radius: 8px; */
+  /*         border-radius: 8px; */
+  /* outline: none; */
 }
+
+/* .typeahead { */
+/*   background-color: #fff; */
+/* } */
+
+/* .typeahead:focus { */
+/*   border: 2px solid #0097cf; */
+/* } */
+
+.tt-query {
+  /* -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+  /*    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+  /*         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); */
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+  /* width: 422px; */
+  width: 100%;
+  margin-top: 2px;
+  padding: 6px 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: 0 2px 5px rgba(0,0,0,.2);
+     -moz-box-shadow: 0 2px 5px rgba(0,0,0,.2);
+          box-shadow: 0 2px 5px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+  padding: 3px 12px;
+  /* font-size: 18px; */
+  /* line-height: 24px; */
+}
+
+.tt-suggestion.tt-cursor {
+  color: #fff;
+  background-color: #3276b1;
+}
+
+.tt-suggestion p {
+  margin: 0;
+}
+
+/* #custom-templates .empty-message { */
+/*   padding: 5px 10px; */
+/*   text-align: center; */
+/* } */
+
+/* #multiple-datasets .league-name { */
+/*   margin: 0 20px 5px 20px; */
+/*   padding: 3px 0; */
+/*   border-bottom: 1px solid #ccc; */
+/* } */
+
+/* #scrollable-dropdown-menu .tt-dropdown-menu { */
+/*   max-height: 150px; */
+/*   overflow-y: auto; */
+/* } */
 
 /* .xdsoft_datetimepicker .xdsoft_timepicker .xdsoft_time_box > div > div.xdsoft_current { */
 /*   background: #428bca; */

@@ -1,7 +1,7 @@
 development:
   sessions:
     default:
-      database: gastos_desarrollo_2
+      database: gastos_desarrollo
       hosts:
         - localhost
       options:
