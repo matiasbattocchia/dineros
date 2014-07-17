@@ -162,6 +162,29 @@ $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   }
 });
 
+// Typeahead
+
+var engine = new Bloodhound({
+  name: 'animals',
+  local: [{value: 'doll'}, { value: 'dog' }, { value: 'dog' }, { value: 'pig' }, { value: 'moose' }],
+  //remote: 'http://example.com/animals?q=%QUERY',
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+  // datumTokenizer: function(d) {
+  //     return Bloodhound.tokenizers.whitespace(d.value);
+  //   },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+});
+
+engine.initialize();
+
+$('#pagadores').typeahead({
+  minLength: 0,
+  highlight: true,
+},
+{
+  source: engine.ttAdapter(),
+});
+
 // Principal
 
 $( 'tbody > tr' ).click( function() {
