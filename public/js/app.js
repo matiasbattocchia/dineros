@@ -184,19 +184,20 @@ $( 'form[action="/gastos"]' ).on( 'typeahead:autocompleted', '.typeahead', funct
 $( '.agregar' ).click( function() {
   var repetible = $( this ).closest( '.row' ).siblings( '.repetible' );
   var repetido = repetible.clone();
-  repetible.removeClass( 'repetible' );
-  repetido.insertAfter( repetible );
-  repetido.show();
+  repetido.removeClass( 'repetible' );
 
-repetido.find( '.typeahead' ).typeahead({
-  minLength: 0,
-  highlight: true,
-  hint: true,
-},
-{
-  displayKey: 'nombre',
-  source: engine.ttAdapter(),
-});
+  repetido.find( '.typeahead' ).typeahead({
+    minLength: 0,
+    highlight: true,
+    hint: true,
+  },
+  {
+    displayKey: 'nombre',
+    source: engine.ttAdapter(),
+  });
+  
+  repetido.insertBefore( repetible.siblings().last() );
+  repetido.find( '.typeahead' ).focus();
 });
 
 // Principal

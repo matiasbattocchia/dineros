@@ -53,9 +53,9 @@ body {
   /* outline: none; */
 }
 
-/* .typeahead { */
-/*   background-color: #fff; */
-/* } */
+.typeahead {
+  background-color: #fff !important;
+}
 
 /* .typeahead:focus { */
 /*   border: 2px solid #0097cf; */
