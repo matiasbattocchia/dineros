@@ -24,21 +24,21 @@ quitarOpción = function( selector, opción ) {
   selector.prop( 'selectedIndex', -1 );
 };
 
-añadirÍtem = function( repetible, ítem, atributo ) {
-  repetido = repetible.clone();
+// añadirÍtem = function( repetible, ítem, atributo ) {
+//   repetido = repetible.clone();
 
-  repetido.removeClass( 'repetible' );
-  repetido.find( 'select' ).val( ítem.id );
-  repetido.find( 'select' ).prop( 'disabled', true );
-  repetido.find( 'input' ).val( ítem[atributo] );
-  repetido.find( 'input' ).prop( 'disabled', false );
-  repetido.find( 'a' ).removeClass( 'disabled' );
+//   repetido.removeClass( 'repetible' );
+//   repetido.find( 'select' ).val( ítem.id );
+//   repetido.find( 'select' ).prop( 'disabled', true );
+//   repetido.find( 'input' ).val( ítem[atributo] );
+//   repetido.find( 'input' ).prop( 'disabled', false );
+//   repetido.find( 'a' ).removeClass( 'disabled' );
 
-  repetido.insertBefore( repetible );
-  repetible.find( 'input' ).prop( 'disabled', true );
+//   repetido.insertBefore( repetible );
+//   repetible.find( 'input' ).prop( 'disabled', true );
 
-  quitarOpción( repetible.find( 'select' ), ítem );
-}
+//   quitarOpción( repetible.find( 'select' ), ítem );
+// }
 
 quitarÍtem = function( repetible, ítem ) {
   repetible.siblings().has( 'select option:selected[value=' + ítem.id + ']' ).remove();
@@ -55,7 +55,48 @@ calcularTotal = function( fuentes, objetivo ) {
   });
 };
 
+$( 'form[action="/gastos"]' ).on( 'typeahead:autocompleted', '.typeahead', function(object, datum, name) {
+  $( this ).closest( '.form-group' ).children( 'input[type=hidden]' ).val( datum.id );
+  // $( this ).closest( '.form-group' ).addClass( 'has-success' );
+});
+
+agregarRepetible = function( repetible, usuario, atributo ) {
+  repetido = repetible.clone();
+  repetido.removeClass( 'repetible' );
+
+  repetido.find( '.typeahead' ).typeahead({
+    minLength: 0,
+    highlight: true,
+    hint: true,
+  },
+  {
+    displayKey: 'nombre',
+    source: engine.ttAdapter(),
+  });
+
+  repetido.insertBefore( repetible.siblings().last() );
+
+  if( usuario ) {
+    repetido.find( 'input[type=hidden]' ).val( usuario.id );
+    repetido.find( 'input.typeahead' ).val( usuario.nombre );
+    repetido.find( 'input.valor' ).val( usuario[atributo] );
+  }
+
+  return repetido;
+}
+
+var engine;
+
 $( document ).ready( function() {
+
+  engine = new Bloodhound({
+    name: 'amigos',
+    local: $( 'form[action="/gastos"]' ).data( 'amigos' ),
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace( 'nombre' ),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+  });
+
+  engine.initialize();
 
   amigos = $( 'form[action="/gastos"]' ).data( 'amigos' );
   pagadores = $( 'form[action="/gastos"]' ).data( 'pagadores' );
@@ -63,19 +104,27 @@ $( document ).ready( function() {
 
   proporciónDesigual = false;
 
-  $.each( amigos, function( index, usuario ) {
-    añadirOpción( $( '.repetible select' ), usuario );
-  });
+  // $.each( amigos, function( index, usuario ) {
+  //   añadirOpción( $( '.repetible select' ), usuario );
+  // });
 
-  $.each( pagadores, function( index, usuario ) {
-    añadirÍtem( $( '.repetible.pagador' ), usuario, 'monto' );
-  });
+  if( pagadores.length > 0 ) {
+    $.each( pagadores, function( index, usuario ) {
+      agregarRepetible( $( '.repetible.pagador' ), usuario, 'monto' );
+    });
+  } else {
+    agregarRepetible( $( '.repetible.pagador' ) );
+  }
 
-  $.each( gastadores, function( index, usuario ) {
-    añadirÍtem( $( '.repetible.gastador' ), usuario, 'proporción' );
+  if( gastadores.length > 0 ) {
+    $.each( gastadores, function( index, usuario ) {
+      agregarRepetible( $( '.repetible.gastador' ), usuario, 'proporción' );
 
-    if( usuario.proporción != 1 ) { proporciónDesigual = true; }
-  });
+      if( usuario.proporción != 1 ) { proporciónDesigual = true; }
+    });
+  } else {
+    agregarRepetible( $( '.repetible.gastador' ) );
+  }
 
   if( proporciónDesigual ) {
     // $( 'input[type=checkbox]' ).prop( 'checked', true );
@@ -86,6 +135,8 @@ $( document ).ready( function() {
   }
 
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
+
+  $( 'input[name="gasto[concepto]"]' ).focus();
 });
 
 
@@ -126,19 +177,19 @@ $( '.repetible select' ).focusout( function() {
 });
 
 // Remueve un usuario cuando el botón de remover es apretado.
-$( '.repetible' ).parent().on( 'click', 'a', function() {
-  usuario = $( this ).closest( '.row' ).find( 'select' ).children( ':selected' );
-  usuario = { id: usuario.val(), nombre: usuario.text() }
+$( 'form[action="/gastos"]' ).on( 'click', '.borrar', function() {
+  // usuario = $( this ).closest( '.row' ).find( 'select' ).children( ':selected' );
+  // usuario = { id: usuario.val(), nombre: usuario.text() }
 
-  var repetible = $( this ).closest( '.row' ).siblings( '.repetible' );
+  $( this ).closest( '.row' ).remove();
 
-  quitarÍtem( $( this ).closest( '.row' ).siblings( '.repetible' ), usuario );
+  // quitarÍtem( $( this ).closest( '.row' ).siblings( '.repetible' ), usuario );
 
   // Repite el cálculo del gasto total cuando un pagador es retirado.
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 
   // Al quitar un repetido siempre vuelve a haber al menos un usuario para elegir.
-  repetible.show();
+  // repetible.show();
 });
 
 // Formatea el monto y suma el total cuando el input cambia.
@@ -149,10 +200,12 @@ $( '.repetible' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', func
 });
 
 // Habilita los selects para incluirlos en el formulario al enviarlo.
-// $( 'form[action="/gastos"]' ).submit( function() {
-//   $( 'select:disabled' ).prop( 'disabled', false );
-// });
+$( 'form[action="/gastos"]' ).submit( function() {
+  // $( 'select:disabled' ).prop( 'disabled', false );
+  $( '.repetible' ).remove();
+});
 
+// Gasto desigual.
 $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   if( $( this ).is( ':checked' ) ) {
     $( '.proporción' ).show();
@@ -163,41 +216,10 @@ $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   }
 });
 
-// Typeahead
-
-var engine = new Bloodhound({
-  name: 'amigos',
-  local: $( 'form[action="/gastos"]' ).data( 'amigos' ),
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace( 'nombre' ),
-  queryTokenizer: Bloodhound.tokenizers.whitespace,
-});
-
-engine.initialize();
-
-$( 'form[action="/gastos"]' ).on( 'typeahead:autocompleted', '.typeahead', function(object, datum, name) {
-  $( this ).closest( '.form-group' ).children( 'input[type=hidden]' ).val( datum.id );
-  // $( this ).closest( '.form-group' ).addClass( 'has-success' );
-});
-
 // Eventos
 
 $( '.agregar' ).click( function() {
-  var repetible = $( this ).closest( '.row' ).siblings( '.repetible' );
-  var repetido = repetible.clone();
-  repetido.removeClass( 'repetible' );
-
-  repetido.find( '.typeahead' ).typeahead({
-    minLength: 0,
-    highlight: true,
-    hint: true,
-  },
-  {
-    displayKey: 'nombre',
-    source: engine.ttAdapter(),
-  });
-  
-  repetido.insertBefore( repetible.siblings().last() );
-  repetido.find( '.typeahead' ).focus();
+  agregarRepetible( $( this ).closest( '.row' ).siblings( '.repetible' ) ).find( '.typeahead' ).focus();
 });
 
 // Principal
