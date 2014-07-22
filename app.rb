@@ -196,7 +196,7 @@ end
 post '/gastos' do
   protegido!
 
-  flash[:message] = params.to_s
+  # flash[:message] = params.to_s
 
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
@@ -209,7 +209,7 @@ post '/gastos' do
   end
 
   params[:gastadores].each do |gastador|
-    participación = gasto.participaciones.new(proporción: (gasto[:gasto_desigual] and gastador[:proporción] or 1))
+    participación = gasto.participaciones.new(proporción: (params[:gasto_desigual] and gastador[:proporción] or 1))
 
     # TODO: El usuario debería estar entre los amigos.
     participación.usuario = Usuario.find(gastador[:id])

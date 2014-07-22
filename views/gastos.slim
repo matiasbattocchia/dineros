@@ -14,5 +14,5 @@ table.table.table-hover
         td = gasto.fecha.short
         td = gasto.monto.to_currency('$')
         td = gasto.concepto
-        td = gasto.pagadores
-        td = gasto.gastadores
+        td = gasto.pagadores.map{ |u| u[:nombre] }.join(', ')
+        td = gasto.gastadores.map{ |u| u[:nombre] }.join(', ')

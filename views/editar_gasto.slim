@@ -30,8 +30,9 @@ h1 Editar gasto
               .input-group
                 span.input-group-addon $
                 input.form-control.valor type='text' name='pagadores[][monto]'
-          .col.md-1
-            button.btn.btn-default.borrar type='button' ✕
+          .col-xs-1
+            .form-group
+              button.btn.btn-default.borrar type='button' ✕
 
         .row
           .col-xs-6
@@ -62,18 +63,20 @@ h1 Editar gasto
               .input-group
                 span.input-group-addon ✕
                 input.form-control.valor type='text' name='gastadores[][proporción]'
-          .col.md-1
-            a.btn.disabled ✕
+          .col-xs-1
+            .form-group
+              button.btn.btn-default.borrar ✕
 
         .row
           .col-xs-6
             .form-group
               button.btn.btn-default.agregar type='button' Agregar
 
-      button.btn.btn-primary type='submit' value='guardar' Guardar
-      a.btn.btn-default href='/gastos' Cancelar
+      .form-group
+        button.btn.btn-primary type='submit' value='guardar' Guardar
+        a.btn.btn-default href='/gastos' Cancelar
 
-    - if @gasto.id
-      form action="/gastos/#{@gasto.id}" method='post'
-        input type='hidden' name='_method' value='delete'
-        button.btn.btn-default type='submit' Eliminar
+- if @gasto.id
+  form action="/gastos/#{@gasto.id}" method='post'
+    input type='hidden' name='_method' value='delete'
+    button.btn.btn-default type='submit' Eliminar
