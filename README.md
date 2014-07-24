@@ -2,10 +2,10 @@
 
 **Dineros** sirve para llevar las cuentas entre amigos. Básicamente permite ingresos del tipo:
 
-Fecha: 22 de julio de 2014
-Concepto: Pizza
-Pagaron: Alfo ($100), Beto ($70)
-Gastaron: Alfo, Beto, Gammo, Delto
+* Fecha: 22 de julio de 2014
+* Concepto: Pizza
+* Pagaron: Alfo ($100), Beto ($70)
+* Gastaron: Alfo, Beto, Gammo, Delto
 
 El ejemplo no lo muestra, pero la participación en el gasto puede ser desigual. La aplicación va calculando cuánto los amigos se deben entre sí a medida que se van produciendo gastos comunes. Cada usuario tiene una cuenta y en ella configura a quienes puede prestarles y hasta cuanto.
 
