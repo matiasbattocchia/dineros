@@ -98,6 +98,8 @@ class Gasto
   field :concepto, type: String
   field :fecha, type: Time
 
+  validates_presence_of :concepto, :fecha
+
   def monto
     aportes.sum(:monto)
   end
@@ -196,7 +198,7 @@ end
 post '/gastos' do
   protegido!
 
-  # flash[:message] = params.to_s
+  flash[:message] = params.to_s
 
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 

@@ -28,6 +28,11 @@ $( 'form[action="/gastos"]' ).on( 'typeahead:autocompleted', '.typeahead', funct
   // $( this ).closest( '.form-group' ).addClass( 'has-success' );
 });
 
+$( 'form[action="/gastos"]' ).on( 'typeahead:selected', '.typeahead', function(object, datum, name) {
+  $( this ).closest( '.form-group' ).children( 'input[type=hidden]' ).val( datum.id );
+  // $( this ).closest( '.form-group' ).addClass( 'has-success' );
+});
+
 agregarRepetible = function( repetible, usuario, atributo ) {
   repetido = repetible.clone();
   repetido.removeClass( 'repetible' );
@@ -91,10 +96,9 @@ $( document ).ready( function() {
   }
 
   if( proporciónDesigual ) {
-    // $( 'input[type=checkbox]' ).prop( 'checked', true );
+    $( 'input[type=checkbox]' ).prop( 'checked', true );
     $( 'input[type=checkbox]' ).parent().addClass( 'active' );
   } else {
-    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', true );
     $( '.proporción' ).hide();
   }
 
@@ -131,9 +135,7 @@ $( 'form[action="/gastos"]' ).submit( function() {
 $( 'form[action="/gastos"] input[type=checkbox]' ).change( function() {
   if( $( this ).is( ':checked' ) ) {
     $( '.proporción' ).show();
-    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', false );
   } else {
-    // $( '.gastador:not(.repetible) .proporción input' ).prop( 'disabled', true );
     $( '.proporción' ).hide();
   }
 });
