@@ -62,10 +62,6 @@ end
 class Usuario
   include Mongoid::Document
 
-  # has_many :aportes, dependent: :restrict
-  # has_many :participaciones, dependent: :restrict
-  # has_and_belongs_to_many :cuentas
-
   field :nombre, type: String
   field :correo, type: String
   field :contraseña, type: String
@@ -120,7 +116,6 @@ class Aporte
 
   belongs_to :usuario
   embedded_in :gasto
-  #belongs_to :gasto
 
   field :monto, type: Float
 
@@ -198,7 +193,7 @@ end
 post '/gastos' do
   protegido!
 
-  flash[:message] = params.to_s
+  # flash[:message] = params.to_s
 
   Gasto.find(params[:id]).destroy unless params[:id].empty?
 
@@ -218,17 +213,7 @@ post '/gastos' do
   end
 
   gasto.save
-  puts gasto.errors.messages
-
-  # Usuario.find(params[:gastadores]).each do |gastador|
-  #   participación = gasto.participaciones.new(proporción: 1.0 / params[:gastadores].length)
-  #   gastador.participaciones << participación
-
-  #   gasto.aportes.each do |aporte|
-  #     deuda = aporte.monto * participación.proporción
-  #     gastador.toma(aporte.usuario, deuda)
-  #   end
-  # end
+  # puts gasto.errors.messages
 
   redirect to '/gastos'
 end

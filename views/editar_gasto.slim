@@ -1,5 +1,11 @@
 h1 Editar gasto
 
+- if @gasto.id
+  .form-group
+    form action="/gastos/#{@gasto.id}" method='post'
+      input type='hidden' name='_method' value='delete'
+      button.btn.btn-default type='submit' Eliminar
+
 .row
   .col-md-6
     form action='/gastos' method='post' data-amigos=usuario.amigos.to_json data-pagadores=@gasto.pagadores.to_json data-gastadores=@gasto.gastadores.to_json
@@ -75,8 +81,3 @@ h1 Editar gasto
       .form-group
         button.btn.btn-primary type='submit' value='guardar' Guardar
         a.btn.btn-default href='/gastos' Cancelar
-
-- if @gasto.id
-  form action="/gastos/#{@gasto.id}" method='post'
-    input type='hidden' name='_method' value='delete'
-    button.btn.btn-default type='submit' Eliminar

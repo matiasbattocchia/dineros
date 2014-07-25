@@ -14,7 +14,6 @@ El ejemplo no lo muestra, pero la participación en el gasto puede ser desigual.
 **General**
 * Validaciones: marcar en el formulario los campos con inválidos junto con los mensajes de error.
 * Al enviar usuarios por JSON filtrar campos sensibles (contraseña, sal).
-* **layout.slim** — Habilitar el colapso de la barra de navegación.
 * **editar_gasto.slim** — Filtrar campos en blanco del formulario enviado.
 * **editar_gasto.slim** — Filtrar de las sugerencias las palabras ya utilizadas para evitar que el mismo usuario pueda aparecer múltiples veces como pagador/gastador.
 * **editar_gasto.slim** — De existir, quitar el id de usuario del campo oculto asociado al typeahead al modificar el nombre de usuario si este no se encuentra dentro de las sugerencias.
@@ -25,6 +24,7 @@ El ejemplo no lo muestra, pero la participación en el gasto puede ser desigual.
 
 **Bootstrap-Datepicker.js**
 * Reportar bug: al seleccionar una fecha con el puntero se pierde el foco en el formulario; debería quedar enfocado el campo de la fecha.
+* Reportar bug: la primera vez que se abre el selector, cargada la página, se abre desalineado respecto al campo de fecha; no así en las aperturas sucesivas.
 
 **Typeahead.js**
 * Mostrar todas las sugerencias al activarse el campo, siempre y cuando este esté vacio (funcionalidad combobox); esta funcionalidad ya está pedida desde hace meses, se la puede esperar o bien implementar una solución propia.

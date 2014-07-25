@@ -2,12 +2,18 @@
   display: none;
 }
 
+.navbar {
+  border-radius: 0;
+  border-right-style: none;
+  border-left-style: none;
+}
+
 tbody tr:hover {
   cursor: pointer;
 }
 
 body {
-  padding-top: 20px;
+  /* padding-top: 20px; */
   padding-bottom: 20px;
 }
 
