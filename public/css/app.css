@@ -2,11 +2,15 @@
   display: none;
 }
 
-.navbar {
-  border-radius: 0;
-  border-right-style: none;
-  border-left-style: none;
+.navbar-form {
+  padding-right: 0;
 }
+
+/* .navbar { */
+/*   border-radius: 0; */
+/*   border-right-style: none; */
+/*   border-left-style: none; */
+/* } */
 
 tbody tr:hover {
   cursor: pointer;

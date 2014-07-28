@@ -142,7 +142,20 @@ class Cuenta
 end
 
 get '/' do
-  redirect to '/gastos'
+  redirect to '/registrarse'
+end
+
+get '/registrarse' do
+  slim :registrarse
+end
+
+post '/registrarse' do
+  if session[:usuario] = Usuario.create(params)
+    redirect to '/gastos'
+  else
+    flash[:error] = 'Error.'
+    redirect to '/registrarse'
+  end
 end
 
 get '/entrar' do
@@ -156,6 +169,7 @@ post '/entrar' do
     # si la landing page fue '/entrar'.
     # redirect back
   else
+    flash[:error] = 'Datos inválidos.'
     redirect to '/entrar'
   end
 end

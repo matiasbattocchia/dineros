@@ -121,7 +121,7 @@ $( 'form[action="/gastos"]' ).on( 'click', '.borrar', function() {
 });
 
 // Formatea el monto y suma el total cuando el input cambia.
-$( '.pagadores' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', function() {
+$( 'form[action="/gastos"]' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', function() {
   $( this ).val( $( this ).val().replace('.',',') );
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 });
