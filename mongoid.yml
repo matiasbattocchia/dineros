@@ -22,3 +22,5 @@ production:
       database: gastos_produccion
       hosts:
         - localhost
+      options:
+        safe: true

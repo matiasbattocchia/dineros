@@ -94,20 +94,18 @@ class Gasto
   field :concepto, type: String
   field :fecha, type: Time
 
-  validates_presence_of :concepto, :fecha
+  validates_presence_of :aportes, :participaciones, :concepto, :fecha
 
   def monto
     aportes.sum(:monto)
   end
 
   def pagadores
-    # Los datos del usuario se podrían denormalizar.
-    aportes.map{ |aporte| {id: aporte.usuario.id, nombre: aporte.usuario.nombre, monto: aporte.monto} }
+    aportes.map{ |aporte| {id: aporte.usuario_id, nombre: aporte.usuario_nombre, monto: aporte.monto} }
   end
 
   def gastadores
-    # Los datos del usuario se podrían denormalizar.
-    participaciones.map{ |participación| {id: participación.usuario.id, nombre: participación.usuario.nombre, proporción: participación.proporción} }
+    participaciones.map{ |participación| {id: participación.usuario_id, nombre: participación.usuario_nombre, proporción: participación.proporción} }
   end
 end
 
@@ -117,8 +115,10 @@ class Aporte
   belongs_to :usuario
   embedded_in :gasto
 
+  field :usuario_nombre, type: String
   field :monto, type: Float
 
+  validates_presence_of :usuario, :usuario_nombre, :gasto
   validates_numericality_of :monto, greater_than: 0
 end
 
@@ -128,8 +128,10 @@ class Participación
   belongs_to :usuario
   embedded_in :gasto
 
+  field :usuario_nombre, type: String
   field :proporción, type: Float
 
+  validates_presence_of :usuario, :usuario_nombre, :gasto
   validates_numericality_of :proporción, greater_than: 0
 end
 
@@ -142,11 +144,19 @@ class Cuenta
 end
 
 get '/' do
-  redirect to '/registrarse'
+  if usuario
+    redirect to '/gastos'
+  else
+    redirect to '/registrarse'
+  end
 end
 
 get '/registrarse' do
-  slim :registrarse
+  if usuario
+    redirect to '/gastos'
+  else
+    slim :registrarse
+  end
 end
 
 post '/registrarse' do
@@ -159,7 +169,11 @@ post '/registrarse' do
 end
 
 get '/entrar' do
-  slim :entrar
+  if usuario
+    redirect to '/gastos'
+  else
+    slim :entrar
+  end
 end
 
 post '/entrar' do
@@ -207,29 +221,34 @@ end
 post '/gastos' do
   protegido!
 
-  # flash[:message] = params.to_s
-
-  Gasto.find(params[:id]).destroy unless params[:id].empty?
-
-  gasto = Gasto.create params[:gasto]
+  @gasto = Gasto.create params[:gasto]
 
   params[:pagadores].each do |pagador|
-    aporte = gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
+    aporte = @gasto.aportes.new(monto: pagador[:monto])
+    # aporte = @gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
     # TODO: El usuario debería estar entre los amigos.
     aporte.usuario = Usuario.find(pagador[:id])
-  end
+    aporte.usuario_nombre = aporte.usuario ? aporte.usuario.nombre : pagador[:nombre]
+  end if params[:pagadores]
 
   params[:gastadores].each do |gastador|
-    participación = gasto.participaciones.new(proporción: (params[:gasto_desigual] and gastador[:proporción] or 1))
+    participación = @gasto.participaciones.new(proporción: (params[:gasto_desigual] and gastador[:proporción] or 1))
 
     # TODO: El usuario debería estar entre los amigos.
     participación.usuario = Usuario.find(gastador[:id])
+    participación.usuario_nombre = participación.usuario ? participación.usuario.nombre : gastador[:nombre]
+  end if params[:gastadores]
+
+  if @gasto.save
+    Gasto.find(params[:id]).destroy unless params[:id].empty?
+
+    flash[:mensaje] = 'El gasto fue guardado.'
+    redirect to '/gastos'
+  else
+    flash.now[:error] = "Errores: #{@gasto.errors.messages}"
+    @gasto.id = nil
+    slim :editar_gasto
   end
-
-  gasto.save
-  # puts gasto.errors.messages
-
-  redirect to '/gastos'
 end
 
 get '/gastos/:id' do

@@ -2,14 +2,14 @@
   .col-md-offset-4.col-md-4
     .panel.panel-primary
       .panel-body
-        form method='post' action='/registrarse'
+        form method='post' action='/registrarse' novalidate=true
           .form-group
             label Nombre
             input.form-control type='text' name='nombre'
           .form-group
             label Correo
-            input.form-control type='text' name='correo'
+            input.form-control type='email' name='correo'
           .form-group
             label Contraseña
-            input.form-control type='text' name='contraseña'
+            input.form-control type='password' name='contraseña'
           button.btn.btn-primary.btn-block type='submit' Crear una cuenta

@@ -8,7 +8,7 @@ h1 Editar gasto
 
 .row
   .col-md-6
-    form action='/gastos' method='post' data-amigos=usuario.amigos.to_json data-pagadores=@gasto.pagadores.to_json data-gastadores=@gasto.gastadores.to_json
+    form action='/gastos' method='post' data-amigos=usuario.amigos.to_json data-pagadores=@gasto.pagadores.to_json data-gastadores=@gasto.gastadores.to_json novalidate=true
 
       input type='hidden' name='id' value=@gasto.id
 
@@ -21,7 +21,7 @@ h1 Editar gasto
           .col-xs-6
             .form-group
               label Fecha
-              input.form-control#fecha name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y/%m/%d')
+              input.form-control type='date' name='gasto[fecha]' value=(@gasto.fecha || Time.now).strftime('%Y-%m-%d')
 
       .form-group
         label ¿Quiénes pagaron?
@@ -30,12 +30,12 @@ h1 Editar gasto
           .col-xs-6
             .form-group
               input type='hidden' name='pagadores[][id]'
-              input.form-control.typeahead type='text'
+              input.form-control.typeahead type='text' name='pagadores[][nombre]'
           .col-xs-4
             .form-group
               .input-group
                 span.input-group-addon $
-                input.form-control.valor type='text' name='pagadores[][monto]'
+                input.form-control.valor type='number' step='0.01' name='pagadores[][monto]'
           .col-xs-2
             .form-group
               button.btn.btn-default.btn-block.borrar type='button' ✕
@@ -63,12 +63,12 @@ h1 Editar gasto
           .col-xs-6
             .form-group
               input type='hidden' name='gastadores[][id]'
-              input.form-control.typeahead type='text'
+              input.form-control.typeahead type='text' name='gastadores[][nombre]'
           .col-xs-4.proporción
             .form-group
               .input-group
                 span.input-group-addon ✕
-                input.form-control.valor type='text' name='gastadores[][proporción]'
+                input.form-control.valor type='number' step='0.01' name='gastadores[][proporción]'
           .col-xs-2
             .form-group
               button.btn.btn-default.btn-block.borrar ✕

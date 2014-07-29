@@ -13,11 +13,12 @@ El ejemplo no lo muestra, pero la participación en el gasto puede ser desigual.
 
 **General**
 * Validaciones: marcar en el formulario los campos con inválidos junto con los mensajes de error.
+* Validaciones: reescribir correctamente la URL en la validación (actualmente usa la del POST).
 * Al enviar usuarios por JSON filtrar campos sensibles (contraseña, sal).
 * **editar_gasto.slim** — Filtrar campos en blanco del formulario enviado.
 * **editar_gasto.slim** — Filtrar de las sugerencias las palabras ya utilizadas para evitar que el mismo usuario pueda aparecer múltiples veces como pagador/gastador.
 * **editar_gasto.slim** — De existir, quitar el id de usuario del campo oculto asociado al typeahead al modificar el nombre de usuario si este no se encuentra dentro de las sugerencias.
-* **post '/gastos'** — No borrar el gasto antes de validarlo, al menos. En realidad lo que debería hacerse es actualizar el registro en vez de eliminarlo y volverlo a crear.
+* **post '/gastos'** — Actualizar el registro en vez de eliminarlo y volverlo a crear.
 
 **Mongoid**
 * Reportar bug: validaciones y valores por defecto. La validación (aún con ´allow_nil: true´) evita la asignación del valor por defecto.

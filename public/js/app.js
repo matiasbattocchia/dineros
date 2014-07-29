@@ -17,9 +17,11 @@ calcularTotal = function( fuentes, objetivo ) {
   objetivo.val( function() {
     var sum = 0;
     fuentes.each( function() {
-      sum += Number( $( this ).val().replace(',','.') );
+      sum += Number( $( this ).val() );
+      // sum += Number( $( this ).val().replace(',','.') );
     });
-    return String( sum.toFixed(2) ).replace('.',',');
+    return String( sum.toFixed(2) );
+    // return String( sum.toFixed(2) ).replace('.',',');
   });
 };
 
@@ -122,7 +124,7 @@ $( 'form[action="/gastos"]' ).on( 'click', '.borrar', function() {
 
 // Formatea el monto y suma el total cuando el input cambia.
 $( 'form[action="/gastos"]' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', function() {
-  $( this ).val( $( this ).val().replace('.',',') );
+  // $( this ).val( $( this ).val().replace('.',',') );
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 });
 
