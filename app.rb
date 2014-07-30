@@ -2,8 +2,6 @@ require 'bundler'
 Bundler.require
 #################
 
-set :bind, '0.0.0.0'
-
 I18n.enforce_available_locales = true
 
 Mongoid.load!('./mongoid.yml')
