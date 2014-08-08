@@ -6,6 +6,7 @@ gem 'slim'
 gem 'mongoid'
 gem 'rack-flash3', require: 'rack-flash'
 gem 'puma'
+gem 'bcrypt'
 
 group :develoment do
   gem 'pry'

@@ -7,6 +7,8 @@ I18n.enforce_available_locales = true
 Mongoid.load!('./mongoid.yml')
 Mongoid.raise_not_found_error = false
 
+# Este hack convierte los _id de MongoDB a id al
+# convertir el objeto a JSON.
 module Mongoid
   module Document
     def as_json(options={})
@@ -59,14 +61,29 @@ end
 
 class Usuario
   include Mongoid::Document
+  include BCrypt
 
   field :nombre, type: String
   field :correo, type: String
-  field :contraseña, type: String
-  field :sal, type: String
+  field :hash_contraseña, type: String
+  field :estado, type: String, default: 'no verificado'
+
+  attr_protected :hash_contraseña, :estado
+
+  validates_presence_of :nombre, :correo, :hash_contraseña
+  validates_inclusion_of :estado, in: ['no verificado', 'verificado', 'administrador']
 
   def amigos
     Usuario.all
+  end
+
+  def contraseña
+    @contraseña ||= Password.new hash_contraseña
+  end
+
+  def contraseña= nueva_contraseña
+    @contraseña = Password.create nueva_contraseña
+    self.hash_contraseña = @contraseña
   end
 
   # def toma prestatario, dinero
@@ -75,13 +92,13 @@ class Usuario
   # end
 end
 
-class Contrato
-  include Mongoid::Document
+# class Contrato
+#   include Mongoid::Document
 
-  field :partes
-  field :límite
-  field :estado
-end
+#   field :partes
+#   field :límite
+#   field :estado
+# end
 
 class Gasto
   include Mongoid::Document
@@ -133,13 +150,13 @@ class Participación
   validates_numericality_of :proporción, greater_than: 0
 end
 
-class Cuenta
-  include Mongoid::Document
+# class Cuenta
+#   include Mongoid::Document
 
-  has_and_belongs_to_many :usuarios
+#   has_and_belongs_to_many :usuarios
 
-  field :monto, type: Float
-end
+#   field :monto, type: Float
+# end
 
 get '/' do
   if usuario
@@ -158,9 +175,13 @@ get '/registrarse' do
 end
 
 post '/registrarse' do
-  if session[:usuario] = Usuario.create(params)
+  session[:usuario] = Usuario.new params[:usuario]
+  usuario.contraseña = params[:contraseña]
+
+  if usuario.save
     redirect to '/gastos'
   else
+    session[:usuario] = nil
     flash[:error] = 'Error.'
     redirect to '/registrarse'
   end
@@ -175,12 +196,16 @@ get '/entrar' do
 end
 
 post '/entrar' do
-  if session[:usuario] = Usuario.find_by(correo: params[:correo])
+  # TODO: ¿Qué pasa si dos usuarios se registran con el mismo correo?
+  session[:usuario] = Usuario.find_by correo: params[:correo]
+  
+  if usuario and usuario.contraseña == params[:contraseña]
     redirect to '/gastos'
     # redirect back tiene el problema de no redirigir a ninguna parte
     # si la landing page fue '/entrar'.
     # redirect back
   else
+    session[:usuario] = nil
     flash[:error] = 'Datos inválidos.'
     redirect to '/entrar'
   end
@@ -222,18 +247,15 @@ post '/gastos' do
   @gasto = Gasto.create params[:gasto]
 
   params[:pagadores].each do |pagador|
-    aporte = @gasto.aportes.new(monto: pagador[:monto])
+    aporte = @gasto.aportes.new monto: pagador[:monto]
     # aporte = @gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
-    # TODO: El usuario debería estar entre los amigos.
-    aporte.usuario = Usuario.find(pagador[:id])
+    aporte.usuario = usuario.amigos.find pagador[:id]
     aporte.usuario_nombre = aporte.usuario ? aporte.usuario.nombre : pagador[:nombre]
   end if params[:pagadores]
 
   params[:gastadores].each do |gastador|
-    participación = @gasto.participaciones.new(proporción: (params[:gasto_desigual] and gastador[:proporción] or 1))
-
-    # TODO: El usuario debería estar entre los amigos.
-    participación.usuario = Usuario.find(gastador[:id])
+    participación = @gasto.participaciones.new proporción: (params[:gasto_desigual] and gastador[:proporción] or 1)
+    participación.usuario = usuario.amigos.find gastador[:id]
     participación.usuario_nombre = participación.usuario ? participación.usuario.nombre : gastador[:nombre]
   end if params[:gastadores]
 
