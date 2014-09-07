@@ -23,10 +23,6 @@ El ejemplo no lo muestra, pero la participación en el gasto puede ser desigual.
 **Mongoid**
 * Reportar bug: validaciones y valores por defecto. La validación (aún con ´allow_nil: true´) evita la asignación del valor por defecto.
 
-**Bootstrap-Datepicker.js**
-* Reportar bug: al seleccionar una fecha con el puntero se pierde el foco en el formulario; debería quedar enfocado el campo de la fecha.
-* Reportar bug: la primera vez que se abre el selector, cargada la página, se abre desalineado respecto al campo de fecha; no así en las aperturas sucesivas.
-
 **Typeahead.js**
 * Mostrar todas las sugerencias al activarse el campo, siempre y cuando este esté vacio (funcionalidad combobox); esta funcionalidad ya está pedida desde hace meses, se la puede esperar o bien implementar una solución propia.
 * CSS: scroll vertical en el menú de sugerencias cuando estas son muchas (overflow).

@@ -20,6 +20,17 @@ $( 'form[action="/gastos"]' ).on( 'typeahead:selected', '.typeahead', function(o
   // $( this ).closest( '.form-group' ).addClass( 'has-success' );
 });
 
+getSource = function() {
+  return function(query, cb) {
+    if(query == '') {
+      cb(engine.local);
+    } else {
+      adapter = engine.ttAdapter();
+      adapter(query, cb);
+    }
+  }
+}
+
 agregarRepetible = function( repetible, usuario, atributo ) {
   repetido = repetible.clone();
   repetido.removeClass( 'repetible' );
@@ -31,7 +42,7 @@ agregarRepetible = function( repetible, usuario, atributo ) {
   },
   {
     displayKey: 'nombre',
-    source: engine.ttAdapter(),
+    source: getSource(),
   });
 
   repetido.insertBefore( repetible.siblings().last() );
@@ -58,7 +69,6 @@ $( document ).ready( function() {
 
   engine.initialize();
 
-  amigos = $( 'form[action="/gastos"]' ).data( 'amigos' );
   pagadores = $( 'form[action="/gastos"]' ).data( 'pagadores' );
   gastadores = $( 'form[action="/gastos"]' ).data( 'gastadores' );
 
@@ -108,10 +118,14 @@ $( 'form[action="/gastos"]' ).on( 'click', '.borrar', function() {
 });
 
 // Formatea el monto y suma el total cuando el input cambia.
-$( 'form[action="/gastos"]' ).parent().on( 'keyup', 'input[name="pagadores[][monto]"]', function() {
+$( 'form[action="/gastos"]' ).on( 'keyup', 'input[name="pagadores[][monto]"]', function() {
   // $( this ).val( $( this ).val().replace('.',',') );
   calcularTotal( $( 'input[name="pagadores[][monto]"]' ), $( 'input[name=total]' ) );
 });
+
+// $( 'form[action="/gastos"]' ).on( 'focus', 'input.typeahead', function() {
+//   $( this ).typeahead( 'open' );
+// });
 
 // Remueve los repetibles, que son campos no visibles, al enviar el formulario.
 $( 'form[action="/gastos"]' ).submit( function() {
