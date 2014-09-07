@@ -43,10 +43,10 @@ html
               a.navbar-link href='/perfil' = usuario.nombre
 
           - elsif request.path_info != '/entrar'
-            a.btn.btn-default.navbar-btn.navbar-right href='/entrar' Entrar
+            a.btn.btn-success.navbar-btn.navbar-right href='/entrar' Entrar
 
           - else
-            a.btn.btn-default.navbar-btn.navbar-right href='/registrarse' Registrarse
+            a.btn.btn-success.navbar-btn.navbar-right href='/registrarse' Registrarse
 
     .container
       - if flash[:mensaje]
