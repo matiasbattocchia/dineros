@@ -198,7 +198,7 @@ end
 post '/entrar' do
   # TODO: ¿Qué pasa si dos usuarios se registran con el mismo correo?
   session[:usuario] = Usuario.find_by correo: params[:correo]
-  
+
   if usuario and usuario.contraseña == params[:contraseña]
     redirect to '/gastos'
     # redirect back tiene el problema de no redirigir a ninguna parte
@@ -227,7 +227,8 @@ end
 get '/gastos' do
   protegido!
 
-  @gastos = Gasto.or({'aportes.usuario_id' => usuario.id}, {'participaciones.usuario_id' => usuario.id}).desc(:fecha)
+  #@gastos = Gasto.or({'aportes.usuario_id' => usuario.id}, {'participaciones.usuario_id' => usuario.id}).desc(:fecha)
+  @gastos = Gasto.all.desc(:fecha)
 
   slim :gastos
 end
@@ -252,6 +253,12 @@ post '/gastos' do
     aporte.usuario = usuario.amigos.find pagador[:id]
     aporte.usuario_nombre = aporte.usuario ? aporte.usuario.nombre : pagador[:nombre]
   end if params[:pagadores]
+
+  params[:gastadores].delete_if do |gastador|
+    gastador[:id].empty?
+  end
+
+  params[:gastadores] = params[:pagadores] if params[:gastadores].empty?
 
   params[:gastadores].each do |gastador|
     participación = @gasto.participaciones.new proporción: (params[:gasto_desigual] and gastador[:proporción] or 1)
