@@ -1,3 +1,4 @@
+require 'forwardable'
 require 'bundler'
 Bundler.require
 #################
@@ -100,6 +101,25 @@ end
 #   field :estado
 # end
 
+class Deuda
+  extend Forwardable
+
+  attr_reader :deudas
+  def_delegators :@deudas, :[], :[]=
+
+  def initialize deudas = {}
+    @deudas = deudas
+  end
+
+  def + otras_deudas
+    Deuda.new(@deudas.merge(otras_deudas.deudas) do |key, deudor_izq, deudor_der|
+      deudor_izq.merge(deudor_der) do |key, adeudado_izq, adeudado_der|
+        adeudado_izq + adeudado_der
+      end
+    end)
+  end
+end
+
 class Gasto
   include Mongoid::Document
 
@@ -121,6 +141,33 @@ class Gasto
 
   def gastadores
     participaciones.map{ |participación| {id: participación.usuario_id, nombre: participación.usuario_nombre, proporción: participación.proporción} }
+  end
+
+  def calcular_deudas
+    participación_colectiva = participaciones.sum(:proporción)
+
+    deudas = Deuda.new
+
+    participaciones.each do |gastador|
+      deudas_individuales = {}
+      deudas_individuales[gastador.usuario_id] = 0
+
+      participación_individual = gastador.proporción / participación_colectiva
+      
+      aportes.each do |pagador|
+        monto = pagador.monto * participación_individual
+        
+        if pagador.usuario_id != gastador.usuario_id
+          deudas_individuales[pagador.usuario_id] = monto
+        end
+
+        deudas_individuales[gastador.usuario_id] += monto
+      end
+
+      deudas[gastador.usuario_id] = deudas_individuales
+    end
+
+    deudas
   end
 end
 
