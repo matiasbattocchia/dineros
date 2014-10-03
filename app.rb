@@ -100,6 +100,11 @@ end
 #   field :límite
 #   field :estado
 # end
+  
+# class DeudaPersonal
+#   include Mongoid::Document
+
+# end
 
 class Deuda
   extend Forwardable
@@ -295,10 +300,12 @@ post '/gastos' do
   @gasto = Gasto.create params[:gasto]
 
   params[:pagadores].each do |pagador|
-    aporte = @gasto.aportes.new monto: pagador[:monto]
-    # aporte = @gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
-    aporte.usuario = usuario.amigos.find pagador[:id]
-    aporte.usuario_nombre = aporte.usuario ? aporte.usuario.nombre : pagador[:nombre]
+    unless pagador[:monto].to_i == 0
+      aporte = @gasto.aportes.new monto: pagador[:monto]
+      # aporte = @gasto.aportes.new(monto: pagador[:monto].gsub(',', '.'))
+      aporte.usuario = usuario.amigos.find pagador[:id]
+      aporte.usuario_nombre = aporte.usuario ? aporte.usuario.nombre : pagador[:nombre]
+    end
   end if params[:pagadores]
 
   params[:gastadores].delete_if do |gastador|
