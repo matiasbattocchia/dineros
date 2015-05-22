@@ -1,7 +1,9 @@
-#\ -s puma -q
+
 require 'bundler'
 
 Bundler.require
+
+I18n.enforce_available_locales = true
 
 Mongoid.load!('./mongoid.yml')
 Mongoid.raise_not_found_error = false
@@ -15,15 +17,18 @@ ActiveSupport::Inflector.inflections do |inflect|
 end
 
 use Rack::Session::Cookie,
-  :key => 'rack.session',
-  :domain => 'foo.com',
-  :path => '/',
-  :expire_after => 2592000,
-  :secret => 'change_me'
+ :key => 'rack.session',
+ :domain => 'foo.com',
+ :path => '/',
+ :expire_after => 2592000,
+ :secret => 'change_me'
 
 use Rack::Flash
+
 use Rack::MethodOverride
 
-require './app'
+root = ::File.dirname(__FILE__)
+require ::File.join( root, 'app' )
 
-run Sinatra::Application
+
+run App.new
