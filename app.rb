@@ -21,8 +21,7 @@ class App < Sinatra::Application
     end
   end
 
-
-  get '/' do
+ get '/' do
     if usuario
       redirect to '/gastos'
     else
@@ -49,7 +48,6 @@ class App < Sinatra::Application
       flash[:error] = 'Error.'
       redirect to '/registrarse'
     end
-    binding.pry
   end
 
   get '/entrar' do
@@ -66,7 +64,7 @@ class App < Sinatra::Application
     session[:usuario] = Usuario.find_by correo: params[:correo]
     
     if usuario and usuario.contraseña == params[:contraseña]
-      binding.pry
+      
       redirect to '/gastos'
       # redirect back tiene el problema de no redirigir a ninguna parte
       # si la landing page fue '/entrar'.
